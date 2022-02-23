@@ -1,17 +1,37 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
-import tw from 'tailwind-react-native-classnames'
+import { createStackNavigator } from "@react-navigation/stack"
+import React from "react"
+import { View } from "react-native"
+import tw from "tailwind-react-native-classnames"
+import Maps from "../components/Maps"
+import NavigateCard from "../components/NavigateCard"
+import RideOptionsCard from "../components/RideOptionsCard"
+
 
 const MapScreen = () => {
+  const Stack = createStackNavigator()
   return (
-    <SafeAreaView style={tw`bg-white h-full`}>
-      <View style={tw`p-12`}>
-        <Text style={tw`text-black text-3xl font-bold`}>MapScreen</Text>
+    <View>
+      <View style={tw`h-1/2`}>
+        <Maps />
       </View>
-    </SafeAreaView>
+      <View style={tw`h-1/2 bg-black`}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="NavigateCard"
+            component={NavigateCard}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="RideOptionsCard"
+            component={RideOptionsCard}
+            options={{ headerShown: false }}
+          />
+
+        </Stack.Navigator>
+      </View>
+    </View>
   )
 }
 
 export default MapScreen
-
-const styles = StyleSheet.create({})
