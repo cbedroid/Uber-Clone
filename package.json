@@ -7,9 +7,18 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "lint": "eslint -c .eslintrc \"**/*.{js,jsx}\"",
+    "lint:fix": "eslint \"**/*.{js,jsx}\" --fix"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.17.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/native": "^5.9.8",
     "@react-navigation/stack": "^5.14.9",
@@ -33,7 +42,13 @@
     "typescript": "^4.5.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9"
+    "@babel/core": "^7.12.9",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0"
   },
   "private": true
 }
