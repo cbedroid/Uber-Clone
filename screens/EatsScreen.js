@@ -1,6 +1,6 @@
-import React from 'react'
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
-import tw from 'tailwind-react-native-classnames'
+import React from "react"
+import { Text, View, SafeAreaView } from "react-native"
+import tw from "tailwind-react-native-classnames"
 
 const EatsScreen = () => {
   return (
@@ -13,5 +13,3 @@ const EatsScreen = () => {
 }
 
 export default EatsScreen
-
-const styles = StyleSheet.create({})

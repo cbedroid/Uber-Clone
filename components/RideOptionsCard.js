@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import tw from 'tailwind-react-native-classnames'
+import { Text, View } from "react-native"
+import React from "react"
+import tw from "tailwind-react-native-classnames"
 
 const NavigateCard = () => {
   return (
@@ -12,5 +12,3 @@ const NavigateCard = () => {
 }
 
 export default NavigateCard
-
-const styles = StyleSheet.create({})

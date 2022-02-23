@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from "react-redux"
-import { setDestination } from "../store/slices/navSlice"
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import tw from 'tailwind-react-native-classnames'
-import { GOOGLE_MAPS_APIKEY } from '@env';
-
+import React, { useState, useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { setDestination, setOrigin } from "../store/slices/navSlice"
+import { Text, View, SafeAreaView, StyleSheet } from "react-native"
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete"
+import tw from "tailwind-react-native-classnames"
+// eslint-disable-next-line import/no-unresolved
+import { GOOGLE_MAPS_APIKEY } from "@env";
 
 const NavigateCard = () => {
   const dispatch = useDispatch()
