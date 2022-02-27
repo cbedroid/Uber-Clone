@@ -1,42 +1,75 @@
-import React, { useEffect } from "react"
-import MapView, { Marker } from "react-native-maps"
-import tw from "tailwind-react-native-classnames"
-import { useSelector } from "react-redux"
-import { selectOrigin, selectDestination } from "../features/navSlice"
-
+import React, { useEffect, useRef } from "react";
+import { View } from "react-native";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import { useSelector } from "react-redux";
+import tw from "tailwind-react-native-classnames";
+import {
+  selectOrigin,
+  selectDestination,
+  selectCoordinates,
+} from "../features/navSlice";
 
 const Maps = () => {
-  const origin = useSelector(selectOrigin)
-  const destination = useSelector(selectDestination)
-
+  const origin = useSelector(selectOrigin);
+  const destination = useSelector(selectDestination);
+  const coordinates = useSelector(selectCoordinates);
+  const mapRef = useRef(null);
 
   useEffect(() => {
-    console.log("MapScreen loaded")
-  })
+    console.log("\nMaps loaded");
+
+    if (!origin || !destination) return;
+
+    mapRef.current.fitToSuppliedMarkers(["origin", "destination"], {
+      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+    });
+  }, [origin, destination]);
+
   return (
     <MapView
+      ref={mapRef}
       style={tw`flex-1`}
       mapType="mutedStandard"
       initialRegion={{
-        latitude: origin?.location.lat || 37.78825,
-        longitude: origin?.location.lng || -122.4324,
-        latitudeDelta: 2.0922,
-        longitudeDelta: 2.0421,
+        latitude: origin?.location.lat,
+        longitude: origin?.location.lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
       }}
     >
-      {origin?.location && (
-        <Marker
-          title="Place"
-          description={origin.description}
-          identifier="origin"
-          coordinate={{
-            latitude: origin.location.lat,
-            longitude: origin.location.lng
-          }}
-        >
-        </Marker>)}
+      {destination && origin && coordinates && (
+        <Polyline
+          coordinates={coordinates}
+          origin={origin.description}
+          destination={destination.description}
+          strokeWidth={3}
+          strokeColor={"#000"}
+        />
+      )}
+      {origin && destination && (
+        <View>
+          <Marker
+            title="origin"
+            description={origin.description}
+            identifier="origin"
+            coordinate={{
+              latitude: origin.location.lat,
+              longitude: origin.location.lng,
+            }}
+          />
+          <Marker
+            title="destination"
+            description={destination.description}
+            identifier="destination"
+            coordinate={{
+              latitude: destination.location.lat,
+              longitude: destination.location.lng,
+            }}
+          />
+        </View>
+      )}
     </MapView>
-  )
-}
+  );
+};
 
-export default Maps
+export default Maps;
