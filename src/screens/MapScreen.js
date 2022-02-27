@@ -1,15 +1,13 @@
-import React from "react"
-import { createStackNavigator } from "@react-navigation/stack"
-import { View } from "react-native"
-import tw from "tailwind-react-native-classnames"
-import Maps from "../components/Maps"
-import NavigateCard from "../components/NavigateCard"
-import RideOptionsCard from "../components/RideOptionsCard"
-
+import React from "react";
+import { View } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import tw from "tailwind-react-native-classnames";
+import Maps from "../components/Maps";
+import NavigateCard from "../components/NavigateCard";
+import RideOptionsCard from "../components/RideOptionsCard";
 
 const MapScreen = () => {
-  const Stack = createStackNavigator()
-
+  const Stack = createStackNavigator();
 
   return (
     <View>
@@ -23,17 +21,15 @@ const MapScreen = () => {
             component={NavigateCard}
             options={{ headerShown: false }}
           />
-
           <Stack.Screen
             name="RideOptionsCard"
             component={RideOptionsCard}
             options={{ headerShown: false }}
           />
-
         </Stack.Navigator>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default MapScreen
+export default MapScreen;

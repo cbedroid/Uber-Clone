@@ -1,6 +1,6 @@
-import { Text, View } from "react-native"
-import React from "react"
-import tw from "tailwind-react-native-classnames"
+import React from "react";
+import { Text, View } from "react-native";
+import tw from "tailwind-react-native-classnames";
 
 const NavigateCard = () => {
   return (
@@ -8,7 +8,7 @@ const NavigateCard = () => {
       <Text>NavigateCard</Text>
       <Text>Hello World</Text>
     </View>
-  )
-}
+  );
+};
 
-export default NavigateCard
+export default NavigateCard;
