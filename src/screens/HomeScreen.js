@@ -6,16 +6,17 @@ import NavOptions from "../components/NavOptions";
 
 import { setDestination, setOrigin, selectOrigin } from "../features/navSlice"
 import MapQuestAutoComplete from "../components/MapQuestAutoComplete";
+import NavFavourites from "../components/NavFavourites";
 
 
 const HomeScreen = () => {
   const dispatch = useDispatch()
-  const dropDownRef = React.createRef()
   const origin = useSelector(selectOrigin)
+  const dropDownRef = React.createRef()
 
   useEffect(() => {
     console.log("HomeScreen loaded")
-  })
+  }, [])
 
   const submitOrigin = (results) => {
     if (!results) return
@@ -40,7 +41,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={tw`bg-white h-full`} >
       <View
-        style={tw`p-5 w-full h-full`}
+        style={tw`p-1 w-full`}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => { dropDownRef.current.hideDropDown() }}
       >
@@ -50,11 +51,12 @@ const HomeScreen = () => {
         />
         <MapQuestAutoComplete
           ref={dropDownRef}
-          placeholder={"Where to?"}
+          placeholder={"Where From?"}
           handleSubmit={(data) => submitOrigin(data)}
-          refState={origin}
+          locationProp={origin}
         />
         <NavOptions />
+        <NavFavourites />
       </View>
     </SafeAreaView>
   )
