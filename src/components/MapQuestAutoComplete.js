@@ -29,7 +29,10 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     console.log("AutoComplete loaded");
-  }, []);
+    const previous_search = props.locationProp?.description;
+    if (!previous_search) return;
+    setPlaceholder(previous_search);
+  }, [props.locationProp]);
 
   // Hides dropdown menu if any part of the
   // parent container is touched
@@ -39,6 +42,17 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
     },
   }));
 
+  const textEllipsis = (text, max_width = 315) => {
+    // Custom text ellipsis style for text input
+    text = text.trim();
+    const CHAR_SIZE = 8; // font size
+    const maxCharacters = (max_width / CHAR_SIZE).toFixed(0);
+    const text_length = text.length * CHAR_SIZE;
+    return text_length > max_width
+      ? text.slice(0, maxCharacters) + " ..."
+      : text;
+  };
+
   const handleInput = async (input) => {
     setHidden(false);
     input = input.toLowerCase().trim();
@@ -47,7 +61,7 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
     if (input.length < 6) return;
 
     // Prevents recalling fetchApi when user is either backspacing
-    // or results are already available for current search
+    // or results are already available from previous search
     if (value && value.toLowerCase().startsWith(input)) return;
 
     setValue(input);
@@ -87,7 +101,7 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
       });
       setResults(parseResults(api_resp.data.results));
     } catch (error) {
-      setErrorMsg("Place not found");
+      setErrorMsg("Sorry, we could not find this place!");
       console.error("Error", error);
     }
   };
@@ -105,13 +119,16 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
       <Input
         ref={inputRef}
         onChangeText={handleInput}
-        placeholder={placeholder || props.placeholder || "Enter a location."}
+        placeholder={textEllipsis(
+          placeholder || props.placeholder || "Enter a location."
+        )}
         shake={true}
         errorMessage={errorMsg}
+        style={{ "text-overflow": "ellipsis", width: 200, overflow: "hidden" }}
         leftIcon={{
           type: "font-awesome",
           name: `${!selectedItem ? "search" : "check"}`,
-          size: 12,
+          size: 16,
           color: `${!selectedItem ? "#ccc" : "#009117"}`,
         }}
       />
