@@ -17,9 +17,7 @@ const Maps = () => {
 
   useEffect(() => {
     console.log("\nMaps loaded");
-
     if (!origin || !destination) return;
-
     mapRef.current.fitToSuppliedMarkers(["origin", "destination"], {
       edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
     });
@@ -49,7 +47,7 @@ const Maps = () => {
       {origin && destination && (
         <View>
           <Marker
-            title="origin"
+            title="Starting"
             description={origin.description}
             identifier="origin"
             coordinate={{
@@ -58,7 +56,7 @@ const Maps = () => {
             }}
           />
           <Marker
-            title="destination"
+            title="Destination"
             description={destination.description}
             identifier="destination"
             coordinate={{

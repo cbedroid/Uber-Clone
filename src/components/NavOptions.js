@@ -11,18 +11,20 @@ import { Icon } from "react-native-elements";
 import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import { selectOrigin } from "../features/navSlice";
+const uberEats = require("../assets/UberEats.webp");
+const UberCar = require("../assets/UberRide.webp");
 
 const data = [
   {
     id: "123",
     title: "Get a ride",
-    image: "https://links.papareact.com/3pn",
+    image: UberCar,
     screen: "MapScreen",
   },
   {
     id: "456",
     title: "Order food",
-    image: "https://links.papareact.com/28w",
+    image: uberEats,
     screen: "EatsScreen",
   },
 ];
@@ -40,13 +42,13 @@ const NavOptions = () => {
           <TouchableOpacity
             disabled={!origin}
             onPress={() => navigation.navigate(item.screen)}
-            style={tw`p-2 pl-6 pb-8 pt-4 bg-gray-200 m-2 w-36 h-60 rounded-md shadow-sm  ${
+            style={tw`p-2 pl-6 pb-8 pt-4 bg-gray-200 m-2 w-40 h-60 rounded-md shadow-sm  ${
               !origin && "opacity-30 "
             }`}
           >
             <Image
               style={{ width: 120, height: 120, resizeMode: "contain" }}
-              source={{ uri: item.image }}
+              source={item.image}
             />
             <Text style={tw`mt-2 text-lg font-bold`}>{item.title}</Text>
             <Icon
