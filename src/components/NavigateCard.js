@@ -11,6 +11,7 @@ import {
   setDestination,
   setDirections,
   setCoordinates,
+  setTravelTimeInformation,
   selectDestination,
   selectOrigin,
 } from "../features/navSlice";
@@ -53,7 +54,6 @@ const NavigateCard = () => {
   };
 
   const handleOnPress = (results) => {
-    console.log("handling press", results && "results available");
     dispatch(setDestination({}));
 
     if (!results) return;
@@ -76,7 +76,7 @@ const NavigateCard = () => {
     navigation.navigate("RideOptionsCard");
   };
 
-  const handleDirectionalCoordinates = (data) => {
+  const parseDirectionalCoordinates = (data) => {
     /* Mapquest Directional DOC
      *https://developer.mapquest.com/documentation/directions-api/route/get/
      */
@@ -116,10 +116,26 @@ const NavigateCard = () => {
         responseType: "json",
       });
 
-      // console.log("API Directional Response", api_resp.data)
+      const resp_data = api_resp.data;
       // save direction routes to global state
-      dispatch(setDirections(api_resp.data));
-      handleDirectionalCoordinates(api_resp.data);
+      dispatch(setDirections(resp_data));
+      parseDirectionalCoordinates(resp_data);
+
+      try {
+        // set travel time information
+        const route_info = resp_data.route;
+        dispatch(
+          setTravelTimeInformation({
+            distance: route_info.distance,
+            formattedTime: route_info.formattedTime,
+            realTime: route_info.realTime,
+            fuelUsed: route_info.fuelUsed,
+            options: route_info.options,
+          })
+        );
+      } catch (t_error) {
+        console.log("Travel Error", t_error);
+      }
     } catch (error) {
       console.error("Error", error);
     }
