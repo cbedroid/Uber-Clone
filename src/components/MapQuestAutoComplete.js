@@ -124,7 +124,6 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
         )}
         shake={true}
         errorMessage={errorMsg}
-        style={{ "text-overflow": "ellipsis", width: 200, overflow: "hidden" }}
         leftIcon={{
           type: "font-awesome",
           name: `${!selectedItem ? "search" : "check"}`,
