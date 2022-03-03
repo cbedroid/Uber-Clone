@@ -27,8 +27,7 @@ const NavigateCard = () => {
   const [greetingMessage, setGreetingMessage] = useState("Good Mourning");
   const origin = useSelector(selectOrigin);
   const destination = useSelector(selectDestination);
-  const mapQuestDirectionalUrl =
-    "http://www.mapquestapi.com/directions/v2/route";
+  const mapQuestDirectionalUrl = "http://www.mapquestapi.com/directions/v2/route";
 
   const dropDownRef = React.createRef();
 
@@ -39,17 +38,13 @@ const NavigateCard = () => {
 
   useEffect(() => {
     getDayTimeStatus();
-    console.log("Navigation loaded");
-  }, []);
+    console.log("NavigateCard loaded");
+  });
 
   const getDayTimeStatus = () => {
     const now = new Date().getHours(); // 24hr time format
     const greeting_msg =
-      now >= 12 && now < 18
-        ? "Good Afternoon"
-        : now >= 18 && now < 24
-        ? "Good Evening"
-        : "Good Mourning";
+      now >= 12 && now < 18 ? "Good Afternoon" : now >= 18 && now < 24 ? "Good Evening" : "Good Mourning";
     setGreetingMessage(greeting_msg);
   };
 
@@ -94,15 +89,12 @@ const NavigateCard = () => {
   const getDirectionalApi = async (fromPlace = {}) => {
     // show loading screen
     if (!origin) {
-      console.log(
-        `Can not fetch directions API\n No ${origin ? "destination" : "origin"}`
-      );
+      console.log(`Can not fetch directions API\n No ${origin ? "destination" : "origin"}`);
       return; // need to show error
     }
     // reset directions in global state
     dispatch(setDirections([]));
     // get routes lat and lng from API
-    console.log("Fetching Directional API");
     try {
       const api_resp = await axios({
         baseURL: mapQuestDirectionalUrl,
@@ -127,8 +119,8 @@ const NavigateCard = () => {
         dispatch(
           setTravelTimeInformation({
             distance: route_info.distance,
+            time: route_info.time,
             formattedTime: route_info.formattedTime,
-            realTime: route_info.realTime,
             fuelUsed: route_info.fuelUsed,
             options: route_info.options,
           })
@@ -145,39 +137,37 @@ const NavigateCard = () => {
   return (
     <SafeAreaView style={tw`bg-white flex-1`}>
       <View>
-        <Text style={tw`text-center py-5 text-xl font-bold`}>
-          {greetingMessage}
-        </Text>
+        <Text style={tw`text-center py-5 text-xl font-bold`}>{greetingMessage}</Text>
         <View>
           <MapQuestAutoComplete
             ref={dropDownRef}
-            placeholder={"Where To?"}
+            placeholder={"Where from?"}
             handleSubmit={(data) => handleOnPress(data)}
             locationProp={destination}
           />
         </View>
         <NavFavourites />
       </View>
-      <View
-        style={tw`bg-white flex-row justify-evenly border-gray-100 py-2 mt-auto`}
-      >
+      <View style={tw`bg-white flex-row justify-evenly border-gray-100 py-2 mt-auto`}>
         <TouchableOpacity
-          style={tw`bg-black flex flex-row items-center justify-between w-24 px-4 py-3 border border-gray-200 rounded-full`}
+          disabled={_.isEmpty(destination)}
+          style={tw`${
+            _.isEmpty(destination) ? "bg-gray-200 opacity-30" : "bg-black"
+          } flex flex-row items-center justify-between w-24 px-4 py-3
+           border border-gray-200 rounded-full`}
           onPress={() => navigation.navigate("RideOptionsCard")}
         >
-          <Icon name="car" type="font-awesome" color="white" size={16}></Icon>
-          <Text style={tw`text-white text-center`}>Rides</Text>
+          <Icon name="car" type="font-awesome" color={_.isEmpty(destination) ? "black" : "white"} size={16}></Icon>
+          <Text style={tw`${_.isEmpty(destination) ? "text-gray-600" : "text-white"} text-center`}>Rides</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={tw`bg-gray-50 flex flex-row items-center justify-between w-24 px-4 py-3 border border-gray-200 rounded-full`}
+          disabled={_.isEmpty(destination)}
+          style={tw`${
+            _.isEmpty(destination) ? "bg-gray-200 opacity-30" : "bg-gray-100"
+          } flex flex-row items-center justify-between w-24 px-4 py-3 border border-gray-200 rounded-full`}
           onPress={() => navigation.navigate("EatsScreen")}
         >
-          <Icon
-            name="fast-food-outline"
-            type="ionicon"
-            color="black"
-            size={16}
-          ></Icon>
+          <Icon name="fast-food-outline" type="ionicon" color="black" size={16}></Icon>
           <Text style={tw`text-black text-center`}>Eats</Text>
         </TouchableOpacity>
       </View>
