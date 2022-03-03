@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import NavOptions from "../components/NavOptions";
 import { setDestination, setOrigin } from "../features/navSlice";
-const UberLogo = require("../assets/UberLogo.webp");
+const UberLogo = require("../assets/uber_logo.webp");
 
 // eslint-disable-next-line import/no-unresolved
 
