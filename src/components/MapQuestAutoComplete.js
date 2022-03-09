@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+// eslint-disable-next-line import/no-unresolved
 import { MAPQUEST_APIKEY } from "@env";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { Input } from "react-native-elements";
+import { SearchBar } from "react-native-elements";
 import tw from "tailwind-react-native-classnames";
 // eslint-disable-next-line import/no-unresolved
 const _ = require("lodash");
@@ -23,12 +18,14 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
   const [results, setResults] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
   const [isHidden, setHidden] = useState(false);
+  const [isFocus, setFocus] = useState(false);
   const [, updateState] = useState();
   const inputRef = React.createRef();
   const forceUpdate = React.useCallback(() => updateState({}), []);
 
   useEffect(() => {
     console.log("AutoComplete loaded");
+
     const previous_search = props.locationProp?.description;
     if (!previous_search) return;
     setPlaceholder(previous_search);
@@ -42,19 +39,20 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
     },
   }));
 
-  const textEllipsis = (text, max_width = 315) => {
+  const textEllipsis = (text) => {
     // Custom text ellipsis style for text input
+
+    const window_width = Dimensions.get("screen").width - 120;
     text = text.trim();
     const CHAR_SIZE = 8; // font size
-    const maxCharacters = (max_width / CHAR_SIZE).toFixed(0);
+    const maxCharacters = (window_width / CHAR_SIZE).toFixed(0);
     const text_length = text.length * CHAR_SIZE;
-    return text_length > max_width
-      ? text.slice(0, maxCharacters) + " ..."
-      : text;
+    return text_length > window_width ? text.slice(0, maxCharacters) + " ..." : text;
   };
 
   const handleInput = async (input) => {
     setHidden(false);
+    setValue(input);
     input = input.toLowerCase().trim();
     setSelectedItem(false);
 
@@ -64,7 +62,6 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
     // or results are already available from previous search
     if (value && value.toLowerCase().startsWith(input)) return;
 
-    setValue(input);
     const debouncedAPI = _.debounce(fetchAPI, 400, { maxWait: 1000 }); // debounce statement
     debouncedAPI();
   };
@@ -74,9 +71,7 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
     if (!results) return;
 
     return _.map(results, (result) => {
-      const displayString = result.displayString
-        .replace(/\d{5}-?\d*/g, "")
-        .trim();
+      const displayString = result.displayString.replace(/\d{5}-?\d*/g, "").trim();
       return { ...result, displayString };
     });
   };
@@ -84,7 +79,6 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
   const fetchAPI = async () => {
     if (!value) return;
 
-    setResults(null);
     setErrorMsg("");
     try {
       const api_resp = await axios({
@@ -110,45 +104,59 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
     props.handleSubmit(data);
     setSelectedItem(props.locationProp);
     setPlaceholder(data.displayString);
+    setValue(null);
     setResults(null);
     forceUpdate();
   };
 
   return (
-    <View>
-      <Input
+    <View style={tw`bg-gray-200 rounded-md mx-4 z-50`}>
+      <SearchBar
         ref={inputRef}
+        value={value}
+        onFocus={() => setFocus(true)}
+        onBlur={() => !results && setFocus(false)}
+        inputContainerStyle={tw`bg-gray-200`}
+        inputStyle={tw`text-gray-600 ${value?.length === 0 ? "italic" : "font-semibold"}`}
+        containerStyle={tw`bg-gray-200 border-0 rounded-lg p-0`}
+        renderErrorMessage={false}
         onChangeText={handleInput}
-        placeholder={textEllipsis(
-          placeholder || props.placeholder || "Enter a location."
-        )}
-        shake={true}
-        errorMessage={errorMsg}
-        leftIcon={{
+        onClear={() => {
+          setFocus(false), setValue(null);
+        }}
+        placeholder={textEllipsis(placeholder || props.placeholder || "Enter a location.")}
+        placeholderTextColor="#bbb"
+        searchIcon={{
           type: "font-awesome",
           name: `${!selectedItem ? "search" : "check"}`,
           size: 16,
           color: `${!selectedItem ? "#ccc" : "#009117"}`,
+          backgroundColor: "transparent",
+          containerStyle: tw`flex flex-row items-center bg-gray-200 h-full`,
+        }}
+        cancelIcon={{
+          type: "font-awesome",
+          name: "user",
+          size: 16,
+          color: `${!selectedItem ? "#ccc" : "#009117"}`,
+          backgroundColor: "transparent",
+          containerStyle: tw`flex flex-row items-center bg-gray-200 h-full`,
         }}
       />
+
       {!isHidden && (
         <FlatList
           ref={ref}
           style={[
             styles.FlatList,
-            tw`${!value ? "hidden border-0" : "flex"} ${
-              (inputRef?.current?.isFocused() || results) &&
-              "border border-gray-200 rounded-sm shadow-md"
+            tw`z-50 ${!results || !isFocus ? "hidden border-0" : "flex"} ${
+              results && "border border-gray-200 rounded-sm shadow-md"
             }`,
           ]}
           data={results}
           keyExtractor={(item) => item.id}
-          refreshing={true}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => submitData(item)}
-              style={tw`p-2 w-full`}
-            >
+            <TouchableOpacity onPress={() => submitData(item)} style={tw`p-2 w-full`}>
               <Text style={tw`p-1  font-semibold`}>{item.displayString}</Text>
             </TouchableOpacity>
           )}
@@ -165,12 +173,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   FlatList: {
-    position: "absolute",
-    top: 50,
-    left: 0,
-    zIndex: 100,
     width: "100%",
-    maxHeight: 250,
+    maxHeight: 350,
     height: "auto",
     backgroundColor: "#fff",
   },
