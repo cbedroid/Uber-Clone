@@ -20,6 +20,7 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.17.0",
     "@expo/dev-tools": "^0.13.145",
+    "@gorhom/bottom-sheet": "^4.1.5",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-picker/picker": "2.2.1",
     "@react-navigation/devtools": "^6.0.5",
@@ -32,8 +33,9 @@
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.6",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "react": "^17.0.1",
-    "react-devtools-core": "^4.23.0",
+    "react-devtools-core": "^4.14.0",
     "react-dom": "17.0.1",
     "react-native": "^0.64.3",
     "react-native-dotenv": "^3.3.1",
@@ -42,7 +44,8 @@
     "react-native-gesture-handler": "~2.1.0",
     "react-native-google-places-autocomplete": "^2.4.1",
     "react-native-maps": "0.29.4",
-    "react-native-reanimated": "~2.3.1",
+    "react-native-raw-bottom-sheet": "^2.2.0",
+    "react-native-reanimated": "^2.4.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-svg": "^12.1.1",
@@ -50,18 +53,21 @@
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "redux-devtools-extension": "^2.13.9",
+    "redux-starter-kit": "^2.0.0",
     "tailwind-react-native-classnames": "^1.5.1",
     "typescript": "^4.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@faker-js/faker": "^6.0.0-alpha.7",
     "babel-eslint": "^10.1.0",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^8.9.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.28.0",
-    "intl": "^1.2.5"
+    "intl": "^1.2.5",
+    "remote-redux-devtools": "^0.5.16"
   },
   "private": true
 }
