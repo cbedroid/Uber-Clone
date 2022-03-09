@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, SafeAreaView } from "react-native";
+// eslint-disable-next-line import/no-unresolved
 import { MAPQUEST_APIKEY } from "@env";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -7,14 +8,7 @@ import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import {
-  setDestination,
-  setDirections,
-  setCoordinates,
-  setTravelTimeInformation,
-  selectDestination,
-  selectOrigin,
-} from "../features/navSlice";
+import { setDestination, setDirections, setCoordinates, setTravelTimeInformation, selectDestination, selectOrigin } from "../features/navSlice";
 import MapQuestAutoComplete from "./MapQuestAutoComplete";
 // eslint-disable-next-line import/no-unresolved
 import NavFavourites from "./NavFavourites";
@@ -43,8 +37,7 @@ const NavigateCard = () => {
 
   const getDayTimeStatus = () => {
     const now = new Date().getHours(); // 24hr time format
-    const greeting_msg =
-      now >= 12 && now < 18 ? "Good Afternoon" : now >= 18 && now < 24 ? "Good Evening" : "Good Mourning";
+    const greeting_msg = now >= 12 && now < 18 ? "Good Afternoon" : now >= 18 && now < 24 ? "Good Evening" : "Good Mourning";
     setGreetingMessage(greeting_msg);
   };
 
@@ -139,21 +132,14 @@ const NavigateCard = () => {
       <View>
         <Text style={tw`text-center py-5 text-xl font-bold`}>{greetingMessage}</Text>
         <View>
-          <MapQuestAutoComplete
-            ref={dropDownRef}
-            placeholder={"Where from?"}
-            handleSubmit={(data) => handleOnPress(data)}
-            locationProp={destination}
-          />
+          <MapQuestAutoComplete ref={dropDownRef} placeholder={"Where from?"} handleSubmit={(data) => handleOnPress(data)} locationProp={destination} />
         </View>
         <NavFavourites />
       </View>
       <View style={tw`bg-white flex-row justify-evenly border-gray-100 py-2 mt-auto`}>
         <TouchableOpacity
           disabled={_.isEmpty(destination)}
-          style={tw`${
-            _.isEmpty(destination) ? "bg-gray-200 opacity-30" : "bg-black"
-          } flex flex-row items-center justify-between w-24 px-4 py-3
+          style={tw`${_.isEmpty(destination) ? "bg-gray-200 opacity-30" : "bg-black"} flex flex-row items-center justify-between w-24 px-4 py-3
            border border-gray-200 rounded-full`}
           onPress={() => navigation.navigate("RideOptionsCard")}
         >
