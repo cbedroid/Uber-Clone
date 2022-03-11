@@ -10,7 +10,6 @@ const Maps = (props) => {
   const destination = useSelector(selectDestination);
   const coordinates = useSelector(selectCoordinates);
   const mapRef = useRef(null);
-  const polylineRef = useRef(null);
 
   useEffect(() => {
     console.log("\nMaps loaded");
@@ -35,14 +34,7 @@ const Maps = (props) => {
         }}
       >
         {destination && origin && coordinates && (
-          <Polyline
-            ref={polylineRef}
-            coordinates={coordinates}
-            origin={origin.description}
-            destination={destination.description}
-            strokeWidth={3}
-            strokeColor={"#000"}
-          />
+          <Polyline coordinates={coordinates} origin={origin.description} destination={destination.description} strokeWidth={3} strokeColor={"#000"} />
         )}
 
         {origin && destination && (
