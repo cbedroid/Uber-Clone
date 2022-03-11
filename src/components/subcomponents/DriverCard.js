@@ -4,7 +4,7 @@ import { PropTypes } from "prop-types";
 import { Avatar, Icon } from "react-native-elements";
 import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import { selectDriver } from "../../features/driverSlice";
+import { selectDriver } from "../../features/rideSlice";
 import { toTitleCase } from "../../Helper";
 import RideImage from "./RideImage";
 
