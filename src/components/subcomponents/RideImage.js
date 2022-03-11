@@ -26,8 +26,7 @@ const RideImage = ({ car_id, width, height }) => {
 
   useEffect(() => {
     const image_index = data.findIndex((img) => img.id === car_id || "");
-    if (!image_index) return;
-    console.log("Ride Image", image_index);
+    if (image_index === -1) return;
     setImage(data[image_index]);
   });
 
