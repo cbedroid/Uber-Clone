@@ -10,6 +10,7 @@ const Maps = (props) => {
   const destination = useSelector(selectDestination);
   const coordinates = useSelector(selectCoordinates);
   const mapRef = useRef(null);
+  const polylineRef = useRef(null);
 
   useEffect(() => {
     console.log("\nMaps loaded");
@@ -17,7 +18,7 @@ const Maps = (props) => {
     mapRef.current.fitToSuppliedMarkers(["origin", "destination"], {
       edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
     });
-  }, [origin, destination]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -25,6 +26,7 @@ const Maps = (props) => {
         ref={mapRef}
         style={([tw`relative flex-1`], { ...styles.map })}
         mapType="mutedStandard"
+        loadingEnabled={true}
         initialRegion={{
           latitude: origin?.location.lat,
           longitude: origin?.location.lng,
@@ -34,6 +36,7 @@ const Maps = (props) => {
       >
         {destination && origin && coordinates && (
           <Polyline
+            ref={polylineRef}
             coordinates={coordinates}
             origin={origin.description}
             destination={destination.description}
@@ -41,6 +44,7 @@ const Maps = (props) => {
             strokeColor={"#000"}
           />
         )}
+
         {origin && destination && (
           <View>
             <Marker
