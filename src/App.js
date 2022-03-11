@@ -1,64 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { useReduxDevToolsExtension } from "@react-navigation/devtools";
-import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import Apploading from "expo-app-loading";
 import * as Font from "expo-font";
-import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "react-native-gesture-handler";
 import { Provider } from "react-redux";
-import ConfirmScreen from "./screens/ConfirmScreen";
 import EatsScreen from "./screens/EatsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import MapScreen from "./screens/MapScreen";
+import PickupTimeScreen from "./screens/PickupTimeScreen";
+import SearchScreen from "./screens/SearchScreen";
 import Store from "./store/index";
 
-export default function App() {
-  // const navigationRef = useNavigationContainerRef();
-  // useReduxDevToolsExtension(navigationRef);
-
-  const Stack = createStackNavigator();
-  useFonts({
+const loadFont = async () =>
+  Font.loadAsync({
     UberMoveRegular: require("./assets/fonts/UberMove-Regular.ttf"),
     UberMoveMedium: require("./assets/fonts/UberMove-Medium.ttf"),
     UberTextRegular: require("./assets/fonts/UberMoveText-Regular.ttf"),
     UberTextMedium: require("./assets/fonts/UberMoveText-Medium.ttf"),
   });
 
-  return (
-    <Provider store={Store()}>
-      <NavigationContainer>
-        <SafeAreaProvider>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? -64 : 0}
-            style={{ flex: 1 }}
-          >
-            <Stack.Navigator>
-              <Stack.Screen
-                name="HomeScreen"
-                component={HomeScreen}
-                animationEnabled={true}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="MapScreen"
-                component={MapScreen}
-                animationEnabled={true}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="ConfirmScreen"
-                component={ConfirmScreen}
-                animationEnabled={true}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="EatsScreen" component={EatsScreen} options={{ headerShown: false }} />
-            </Stack.Navigator>
-          </KeyboardAvoidingView>
-        </SafeAreaProvider>
-      </NavigationContainer>
-    </Provider>
-  );
+export default function App() {
+  const navigationRef = React.createRef();
+  const Stack = createStackNavigator();
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useReduxDevToolsExtension(navigationRef);
+
+  if (fontLoaded) {
+    return (
+      <Provider store={Store}>
+        <NavigationContainer ref={() => navigationRef}>
+          <SafeAreaProvider>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              keyboardVerticalOffset={Platform.OS === "ios" ? -64 : 0}
+              style={{ flex: 1 }}
+            >
+              <Stack.Navigator>
+                <Stack.Screen name="HomeScreen" component={HomeScreen} animationEnabled={true} options={{ headerShown: false }} />
+                <Stack.Screen name="MapScreen" component={MapScreen} animationEnabled={true} options={{ headerShown: false }} />
+                <Stack.Screen name="EatsScreen" component={EatsScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="PickupTimeScreen" component={PickupTimeScreen} animationEnabled={true} options={{ headerShown: false }} />
+                <Stack.Screen name="SearchScreen" component={SearchScreen} animationEnabled={true} options={{ headerShown: false }} />
+              </Stack.Navigator>
+            </KeyboardAvoidingView>
+          </SafeAreaProvider>
+        </NavigationContainer>
+      </Provider>
+    );
+  } else {
+    return (
+      <Apploading
+        startAsync={loadFont}
+        onFinish={() => {
+          setFontLoaded(true);
+        }}
+        onError={console.warn}
+      />
+    );
+  }
 }
