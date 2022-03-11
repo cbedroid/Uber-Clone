@@ -1,24 +1,26 @@
 import React from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { Icon } from "react-native-elements";
+import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-
-const data = [
-  {
-    id: "123",
-    icon: "home",
-    location: "Home",
-    destination: "Code Street, London, UK",
-  },
-  {
-    id: "456",
-    icon: "briefcase",
-    location: "Work",
-    destination: "London Eye, London, UK",
-  },
-];
+import { selectUserLocation } from "../features/locationSlice";
 
 const NavFavourites = () => {
+  const userLocation = useSelector(selectUserLocation);
+  const data = [
+    {
+      id: "123",
+      icon: "home",
+      location: "Home",
+      destination: userLocation ? `${userLocation.street} , ${userLocation.adminArea5}, ${userLocation.adminArea3}` : "5555 SomePlace street",
+    },
+    {
+      id: "456",
+      icon: "briefcase",
+      location: "Work",
+      destination: "1455 Market St #400, San Francisco, CA",
+    },
+  ];
   return (
     <View>
       <FlatList
