@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 // eslint-disable-next-line import/no-unresolved
 import { MAPQUEST_APIKEY } from "@env";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { SearchBar } from "react-native-elements";
 import tw from "tailwind-react-native-classnames";
+import { textEllipsis } from "../Helper";
 // eslint-disable-next-line import/no-unresolved
 const _ = require("lodash");
 
@@ -38,17 +39,6 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
       setHidden(true);
     },
   }));
-
-  const textEllipsis = (text) => {
-    // Custom text ellipsis style for text input
-
-    const window_width = Dimensions.get("screen").width - 120;
-    text = text.trim();
-    const CHAR_SIZE = 8; // font size
-    const maxCharacters = (window_width / CHAR_SIZE).toFixed(0);
-    const text_length = text.length * CHAR_SIZE;
-    return text_length > window_width ? text.slice(0, maxCharacters) + " ..." : text;
-  };
 
   const handleInput = async (input) => {
     setHidden(false);
@@ -110,15 +100,15 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
   };
 
   return (
-    <View style={tw`bg-gray-200 rounded-md mx-4 z-50`}>
+    <View style={tw` flex-1`}>
       <SearchBar
         ref={inputRef}
         value={value}
         onFocus={() => setFocus(true)}
         onBlur={() => !results && setFocus(false)}
-        inputContainerStyle={tw`bg-gray-200`}
+        inputContainerStyle={tw`bg-transparent`}
         inputStyle={tw`text-gray-600 ${value?.length === 0 ? "italic" : "font-semibold"}`}
-        containerStyle={tw`bg-gray-200 border-0 rounded-lg p-0`}
+        containerStyle={tw`bg-transparent border-0 p-0`}
         renderErrorMessage={false}
         onChangeText={handleInput}
         onClear={() => {
@@ -132,7 +122,7 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
           size: 16,
           color: `${!selectedItem ? "#ccc" : "#009117"}`,
           backgroundColor: "transparent",
-          containerStyle: tw`flex flex-row items-center bg-gray-200 h-full`,
+          containerStyle: tw`flex flex-row items-center  h-full`,
         }}
         cancelIcon={{
           type: "font-awesome",
@@ -145,22 +135,19 @@ const MapQuestAutoComplete = React.forwardRef((props, ref) => {
       />
 
       {!isHidden && (
-        <FlatList
-          ref={ref}
-          style={[
-            styles.FlatList,
-            tw`z-50 ${!results || !isFocus ? "hidden border-0" : "flex"} ${
-              results && "border border-gray-200 rounded-sm shadow-md"
-            }`,
-          ]}
-          data={results}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => submitData(item)} style={tw`p-2 w-full`}>
-              <Text style={tw`p-1  font-semibold`}>{item.displayString}</Text>
-            </TouchableOpacity>
-          )}
-        />
+        <View>
+          <FlatList
+            ref={ref}
+            style={[styles.FlatList, tw`z-50 ${!results || !isFocus ? "hidden border-0" : "flex"} ${results && "border border-gray-200 rounded-sm shadow-md"}`]}
+            data={results}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => submitData(item)} style={tw`p-2 w-full`}>
+                <Text style={tw`p-1  font-semibold`}>{item.displayString}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
       )}
     </View>
   );
