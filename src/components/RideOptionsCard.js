@@ -8,20 +8,21 @@ import moment from "moment";
 import { Icon } from "react-native-elements";
 import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import { setDriver, selectDriver } from "../features/driverSlice";
 import { selectTravelTimeInformation } from "../features/navSlice";
+import { setDriver, setRide } from "../features/rideSlice";
 const { faker } = require("@faker-js/faker");
 const UberLux = require("../assets/uber_lux_car.webp");
 const UberX = require("../assets/uber_x_car.webp");
 const UberXL = require("../assets/uber_xl_car.webp");
 
 const uberFares = {
-  baseFare: 749,
-  perMin: 28,
-  perMile: 92,
+  baseFare: 98,
+  perMin: 16,
+  perMile: 85,
   surCharge: 100,
-  longPickupFee: 121,
-  bookingFee: 260,
+  longPickupFee: 119,
+  bookingFee: 217,
+  minimumFee: 709,
 };
 const data = [
   {
@@ -37,7 +38,7 @@ const data = [
     title: "Uber XL",
     passengers: 5,
     points: 2,
-    multiplier: 1.2,
+    multiplier: 1.3,
     image: UberXL,
   },
   {
@@ -45,7 +46,7 @@ const data = [
     title: "Uber LUX",
     passengers: 3,
     points: 3,
-    multiplier: 1.75,
+    multiplier: 2.15,
     image: UberLux,
   },
 ];
@@ -72,9 +73,15 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
   // const SURGE_CHARGE_RATE = 1.5;
 
   const dispatch = useDispatch();
-  const driver = useSelector(selectDriver);
 
-  const getDriverInfo = async () => {
+  useEffect(() => {
+    // setPaymentRates(null);
+    console.log("RideOptionCard loaded");
+    const initial_rates = data.map((item) => calculateInternationalRate(item));
+    setPaymentRates(initial_rates);
+  }, [travelTimeInfo]);
+
+  const fetchVehicleModel = async () => {
     //DOC: https://carsapi1.docs.apiary.io/#reference/0/cars-collection/
     // TODO: Move api to redux to prevent recall api
     const url = "https://private-anon-c49f61dfdb-carsapi1.apiary-mock.com/cars";
@@ -84,7 +91,7 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
       responseType: "json",
     });
 
-    if (!response.data) return;
+    if (!response || response.status !== 200) return;
     let car = [];
     while (car.length === 0) {
       const [make, model] = faker.vehicle.vehicle().split(" ");
@@ -101,13 +108,6 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
     );
   };
 
-  useEffect(() => {
-    // setPaymentRates(null);
-    console.log("RideOptionCard loaded");
-    const initial_rates = data.map((item) => calculateInternationalRate(item));
-    setPaymentRates(initial_rates);
-  }, [travelTimeInfo]);
-
   const handleTravelTime = (duration) => {
     if (!duration) return "";
     const [h, m, _] = duration.split(":");
@@ -118,9 +118,12 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
     if (!travelTimeInfo) return;
     // apply Uber base fare charges to Ride
     let currentFare =
-      uberFares.baseFare + (travelTimeInfo.time / 60) * uberFares.perMin + Math.floor(+travelTimeInfo.distance) * uberFares.perMile + uberFares.bookingFee;
+      uberFares.baseFare +
+      uberFares.surCharge +
+      (travelTimeInfo.time / 60) * uberFares.perMin +
+      Math.floor(+travelTimeInfo.distance) * uberFares.perMile +
+      uberFares.bookingFee;
 
-    console.log("\nCost", currentFare, travelTimeInfo.duration);
     const rate = new Intl.NumberFormat("en-us", {
       style: "currency",
       currency: "USD",
@@ -145,7 +148,7 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
     if (!paymentRates) return;
     const payRate = paymentRates[data.indexOf(item)];
     setCurrentRate(payRate);
-    getDriverInfo();
+    fetchVehicleModel();
   };
 
   const carOptionList = React.useCallback(
@@ -192,38 +195,25 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
 
   const listHeader = React.useCallback(() => {
     return (
-      <View style={tw`text-black`}>
-        <TouchableOpacity style={tw`absolute top-3 left-5 p-3 z-50 rounded-full`} onPress={() => navigate("RideOptionsCard")}>
-          <Icon name="chevron-left" type="font-awesome" />
-        </TouchableOpacity>
-        <Text style={tw`text-center text-gray-500  py-5`}>
-          Choose a ride -{""}
-          <Text style={tw`font-normal`}>
-            {travelTimeInfo?.distance.toFixed(2)} {travelTimeInfo && "mi"}
-          </Text>
-        </Text>
+      <View>
+        <Text style={[tw`text-center py-5`, { fontFamily: "UberTextMedium", color: "#000", fontWeight: "200" }]}>Choose a ride, or swipe up for more</Text>
       </View>
     );
   }, []);
 
+  const handleSubmit = () => {
+    const params = { currentRate: currentRate?.real_price, ride: data.filter((ride) => ride.id === selected?.id) };
+    dispatch(setRide(params));
+    navigate({
+      name: "ConfirmPaymentCard",
+      params: params,
+    });
+  };
   const selectRideButton = React.useCallback(() => {
     return (
       <View style={tw`border-t border-gray-200 pt-1 mt-auto`}>
-        <TouchableOpacity
-          onPress={() =>
-            navigate({
-              name: "ConfirmPaymentCard",
-              params: { currentRate: currentRate?.real_price, ride: data.filter((ride) => ride.id === selected?.id) },
-            })
-          }
-          style={tw`bg-black py-3 mx-3 ${!selected && "bg-gray-300"}`}
-          disabled={!selected}
-        >
-          <Text style={tw`text-white text-center text-xl`}>
-            Choose {selected?.title}
-            {" - "}
-            {currentRate?.real_price}
-          </Text>
+        <TouchableOpacity onPress={handleSubmit} style={tw`bg-black py-3 mx-3 ${!selected && "bg-gray-300"}`} disabled={!selected}>
+          <Text style={tw`text-white text-center text-xl`}>{selected?.title ? "Choose - " + selected.title + currentRate?.real_price : "Choose Ride"}</Text>
         </TouchableOpacity>
       </View>
     );
