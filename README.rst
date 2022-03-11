@@ -29,11 +29,9 @@ Designs
 --------
 
 
-|homeScreen| 
+|homeScreen| |searchScreen| 
 
-|searchScreen| |confirmFareScreen|
-
-|rideScreenDefault| |rideScreenSelected|
+|rideScreenSelected| |confirmFareScreen|
 
 |driverScreenDefault| |driverScreenBottom|
 
