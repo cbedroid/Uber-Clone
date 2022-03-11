@@ -1,10 +1,10 @@
 import { combineReducers } from "redux";
-import driverReducer from "./driverSlice";
 import locationReducer from "./locationSlice";
 import navReducer from "./navSlice";
+import rideSlice from "./rideSlice";
 
 export default combineReducers({
   nav: navReducer,
-  driver: driverReducer,
+  ride: rideSlice,
   location: locationReducer,
 });
