@@ -1,0 +1,36 @@
+{
+
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.tabSize": 2,
+  "prettier.printWidth": 160,
+
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "tailwindCSS.includeLanguages": {
+    "javascript": "javascript",
+    "html": "HTML"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+
+  "tabnine.experimentalAutoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "cSpell.words": [
+    "APIKEY",
+    "Favourites",
+    "ionicon",
+    "octicon"
+  ]
+}
