@@ -3,19 +3,24 @@ import { TouchableOpacity, View } from "react-native";
 import { getFocusedRouteNameFromRoute, useNavigationState } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Icon } from "react-native-elements";
+import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import ConfirmPaymentCard from "../components/ConfirmPaymentCard";
 import Maps from "../components/Maps";
-import NavigateCard from "../components/NavigateCard";
 import PickupCard from "../components/PickupCard";
 import RideOptionsCard from "../components/RideOptionsCard";
+import { setDirections, setCoordinates, setTravelTimeInformation, selectDestination, selectOrigin } from "../features/navSlice";
+import { fetchDirectionalApi } from "../Helper";
 const _ = require("lodash");
 
 const MapScreen = ({ route, navigation }) => {
+  const dispatch = useDispatch();
   const Stack = createStackNavigator();
   const currentRoute = getFocusedRouteNameFromRoute(route);
   const [isConfirmPage, setConfirmPageStatus] = useState(false);
   const [goBackRoute, setGoBackRoute] = useState(0);
+  const origin = useSelector(selectOrigin);
+  const destination = useSelector(selectDestination);
 
   const confirmScreenNames = ["ConfirmPaymentCard"];
   const routes = useNavigationState((state) => state.routes.filter((router) => router.name === "MapScreen"));
@@ -27,7 +32,7 @@ const MapScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     setConfirmPageStatus(confirmScreenNames.includes(currentRoute));
-    console.log("isConfirmPage", currentRoute, isConfirmPage);
+    handleMapCoordinates();
   });
 
   const getBackRoute = () => {
@@ -44,6 +49,58 @@ const MapScreen = ({ route, navigation }) => {
     const lastRoute = mapRouteList && mapRouteList.length > 1 ? mapRouteList[1]?.name : "HomeScreen";
     setGoBackRoute(lastRoute);
   };
+
+  const parseDirectionalCoordinates = (data) => {
+    /* Mapquest Directional DOC
+     *https://developer.mapquest.com/documentation/directions-api/route/get/
+     */
+    if (!data || data.length === 0) return;
+    const coords = _.map(data.route.legs[0]["maneuvers"], (maneuver) => {
+      return {
+        latitude: maneuver.startPoint.lat,
+        longitude: maneuver.startPoint.lng,
+      };
+    });
+    dispatch(setCoordinates(coords));
+    return coords;
+  };
+
+  const handleMapCoordinates = async () => {
+    // show loading screen
+    if (!origin || !destination) {
+      console.log(`Can not fetch directions API\n No ${origin ? "destination" : "origin"}`);
+      return; // need to show error
+    }
+    // reset directions in global state
+    dispatch(setDirections([]));
+
+    const api_resp = await fetchDirectionalApi(origin.description, destination.description);
+
+    if (!api_resp || api_resp.status !== 200) return;
+
+    // save direction routes to global state
+    dispatch(setDirections(api_resp.data));
+    parseDirectionalCoordinates(api_resp.data);
+
+    try {
+      // set travel time information
+      const route_info = api_resp.data.route;
+      dispatch(
+        setTravelTimeInformation({
+          distance: route_info.distance,
+          time: route_info.time,
+          formattedTime: route_info.formattedTime,
+          fuelUsed: route_info.fuelUsed,
+          options: route_info.options,
+        })
+      );
+    } catch (t_error) {
+      console.log("Travel Error", t_error);
+    }
+
+    // remove loading screen
+  };
+
   return (
     <View>
       <TouchableOpacity
@@ -59,7 +116,7 @@ const MapScreen = ({ route, navigation }) => {
       </View>
       <View style={tw`${isConfirmPage ? "h-2/6" : "h-1/2"}`}>
         <Stack.Navigator>
-          <Stack.Screen name="NavigateCard" component={NavigateCard} options={{ headerShown: false }} />
+          {/* <Stack.Screen name="NavigateCard" component={NavigateCard} options={{ headerShown: false }} /> */}
           <Stack.Screen name="RideOptionsCard" component={RideOptionsCard} options={{ headerShown: false }} />
           <Stack.Screen name="ConfirmPaymentCard" component={ConfirmPaymentCard} options={{ headerShown: false }} />
           <Stack.Screen name="PickupCard" component={PickupCard} options={{ headerShown: false }} />
