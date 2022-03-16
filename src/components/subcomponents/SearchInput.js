@@ -6,7 +6,7 @@ import { FAB, LinearProgress } from "react-native-elements";
 import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import { selectUserLocation } from "../../features/locationSlice";
-import { setOrigin, setDestination, selectDestination } from "../../features/navSlice";
+import { setOrigin, setDestination, selectDestination, selectOrigin } from "../../features/navSlice";
 import { fetchPlacesApi } from "../../Helper";
 import { textEllipsis } from "../../Helper";
 import AnimatedIcon from "./AnimatedIcon";
@@ -17,6 +17,7 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const userLocation = useSelector(selectUserLocation);
+  const origin = useSelector(selectOrigin);
   const destination = useSelector(selectDestination);
   const inputRef_1 = React.useRef();
   const inputRef_2 = React.useRef();
@@ -34,27 +35,29 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
     setInputValue_2(null);
   }, []);
 
-  /* Dispatch origin or destination to store*/
+  /**
+   * Dispatch origin or destination to store
+   * params {bool} ignoreState - flag set to ignore local state checks
+   */
   React.useImperativeHandle(ref, () => ({
-    setOriginDestination(item) {
-      if (!apiResults) return;
+    setOriginDestination(item, ignoreState = false) {
+      if (!apiResults && !ignoreState) return;
+      console.log("Item", item);
 
-      let action;
-      const value = item.displayString;
+      // Get the current focused input field
+      const inputSetter = focusedInput === 0 ? setInputValue_1 : setInputValue_2;
+      // Maps current focused input value to either `nearby city's name` or `input field value`
+      // ** See searchSCreen - handlePress or convertToGeoFormat
+      const value = ignoreState ? item?.name : item.displayString;
+      // Maps Nav dispatch method to either Origin or Destination base on the focused input field
+      const action = focusedInput === 0 ? setOrigin : setDestination;
 
-      // set dispatch action and input value based on to the focused input
-      if (focusedInput === 0) {
-        action = setOrigin;
-        setInputValue_1(value);
-      } else {
-        action = setDestination;
-        setInputValue_2(value);
-      }
+      inputSetter(value); // set the current input field value
 
       dispatch(action(item));
       //TODO: Navigate if destination is set, then navigate to MapScreen
       // only move to next screen if the second input has a value
-      if (inputValue_2 && destination) navigation.navigate("MapScreen");
+      if ((inputValue_2 || ignoreState) && origin && destination) navigation.navigate("MapScreen");
     },
   }));
 
