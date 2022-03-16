@@ -65,3 +65,42 @@ export const fetchDirectionalApi = async (origin, destination = {}) => {
     console.error("Directional Api Error", error);
   }
 };
+
+export const fetchUserAddress = async (location) => {
+  console.log("Fetching User Address ");
+  const lat = location?.coords?.latitude;
+  const lon = location?.coords?.longitude;
+  const baseURL = "http://www.mapquestapi.com/geocoding/v1/reverse";
+
+  const api_resp = await axios({
+    baseURL: baseURL,
+    method: "GET",
+    params: {
+      location: `${lat},${lon}`,
+      key: MAPQUEST_APIKEY,
+    },
+    responseType: "json",
+  });
+
+  return api_resp;
+};
+
+export const fetchNearbyPlaces = async (location) => {
+  const lat = location?.coords?.latitude;
+  const lon = location?.coords?.longitude;
+
+  const baseURL = "http://www.mapquestapi.com/search/v2/radius";
+
+  const api_resp = await axios({
+    baseURL: baseURL,
+    method: "GET",
+    params: {
+      maxMatches: 10,
+      origin: `${lat},${lon}`,
+      key: MAPQUEST_APIKEY,
+    },
+    responseType: "json",
+  });
+
+  return api_resp;
+};
