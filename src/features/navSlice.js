@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const filterPlaces = (item) => {
+const toGeoFormat = (item) => {
+  const lat = item?.place?.geometry?.coordinates[1] || item?.lat;
+  const lng = item?.place?.geometry?.coordinates[0] || item?.lng;
+
   return {
     name: item.name,
     location: {
-      lat: parseFloat(item.place.geometry.coordinates[1]),
-      lng: parseFloat(item.place.geometry.coordinates[0]),
+      lat: parseFloat(lat),
+      lng: parseFloat(lng),
       latitudeDelta: 0.0005,
       longitudeDelta: 0.0005,
     },
@@ -27,16 +30,16 @@ export const navSlice = createSlice({
   reducers: {
     setOrigin: (state, action) => {
       const item = action.payload;
-      state.origin = filterPlaces(item);
+      state.origin = toGeoFormat(item);
     },
     setDestination: (state, action) => {
       const item = action.payload;
-      state.destination = filterPlaces(item);
+      state.destination = toGeoFormat(item);
     },
     setStops: (state, action) => {
       const item = action.payload;
       const stops = state.stops || [];
-      state.stops = [...stops, ...filterPlaces(item)];
+      state.stops = [...stops, ...toGeoFormat(item)];
     },
 
     setTravelTimeInformation: (state, action) => {
