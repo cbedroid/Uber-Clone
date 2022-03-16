@@ -10,6 +10,7 @@ import "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import EatsScreen from "./screens/EatsScreen";
 import HomeScreen from "./screens/HomeScreen";
+import LoadingScreen from "./screens/LoadingScreen";
 import MapScreen from "./screens/MapScreen";
 import PickupTimeScreen from "./screens/PickupTimeScreen";
 import SearchScreen from "./screens/SearchScreen";
@@ -40,7 +41,8 @@ export default function App() {
               keyboardVerticalOffset={Platform.OS === "ios" ? -64 : 0}
               style={{ flex: 1 }}
             >
-              <Stack.Navigator>
+              <Stack.Navigator initialRouteName="LoadingScreen">
+                <Stack.Screen name="LoadingScreen" component={LoadingScreen} animationEnabled={true} options={{ headerShown: false }} />
                 <Stack.Screen name="HomeScreen" component={HomeScreen} animationEnabled={true} options={{ headerShown: false }} />
                 <Stack.Screen name="MapScreen" component={MapScreen} animationEnabled={true} options={{ headerShown: false }} />
                 <Stack.Screen name="EatsScreen" component={EatsScreen} options={{ headerShown: false }} />
