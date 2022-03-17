@@ -5,11 +5,11 @@ import { PropTypes } from "prop-types";
 import { FAB, LinearProgress } from "react-native-elements";
 import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import { selectUserLocation } from "../../features/locationSlice";
-import { setOrigin, setDestination, selectDestination, selectOrigin } from "../../features/navSlice";
-import { textEllipsis } from "../../Helper";
-import { fetchPlacesApi } from "../../Utils";
-import AnimatedIcon from "./AnimatedIcon";
+import { selectUserLocation } from "../features/locationSlice";
+import { setOrigin, setDestination, selectDestination, selectOrigin } from "../features/navSlice";
+import { textEllipsis } from "../Helper";
+import { fetchPlacesApi } from "../Utils";
+import AnimatedIcon from "./subcomponents/AnimatedIcon";
 const _ = require("lodash");
 
 // eslint-disable-next-line react/display-name
@@ -36,7 +36,6 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
   const [loading, setLoading] = useState(null);
 
   useEffect(() => {
-    console.log("Search Loading ");
     const userSaveRoute = route?.params?.destination; // user pick location from saved location.
     if (userSaveRoute) setDestinationFromSavedLocation(userSaveRoute);
     setInputValue_2(null);
@@ -49,12 +48,11 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
   React.useImperativeHandle(ref, () => ({
     setOriginDestination(item, ignoreState = false) {
       if (!apiResults && !ignoreState) return;
-      console.log("Item", item);
 
       // Get the current focused input field
       const inputSetter = focusedInput === 0 ? setInputValue_1 : setInputValue_2;
       // Maps current focused input value to either `nearby city's name` or `input field value`
-      // ** See searchSCreen - handlePress or convertToGeoFormat
+      // ** See searchScreen - handlePress or convertToGeoFormat
       const value = ignoreState ? item?.name : item.displayString;
       // Maps Nav dispatch method to either Origin or Destination base on the focused input field
       const action = focusedInput === 0 ? setOrigin : setDestination;
@@ -62,8 +60,7 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
       inputSetter(value); // set the current input field value
 
       dispatch(action(item));
-      //TODO: Navigate if destination is set, then navigate to MapScreen
-      // only move to next screen if the second input has a value
+      // Only move to next screen if the second input has a value
       if ((inputValue_2 || ignoreState) && origin && destination) navigation.navigate("MapScreen");
     },
   }));
@@ -105,7 +102,6 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
   };
 
   const setDestinationFromSavedLocation = async (location) => {
-    console.log("\nSetting Saved destination");
     const api_response = await fetchPlacesApi(location);
     if (!api_response || api_response.status !== 200) return;
 
@@ -114,10 +110,7 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
 
     // reset origin if destination and origin are the same
     // must use origin and destination from store, because of the additional formatting on reducers
-    if (_.isEqual(origin, destination)) {
-      console.log("Resetting Origin, it is the same as destination");
-      dispatch(setOrigin({}));
-    }
+    if (_.isEqual(origin, destination)) dispatch(setOrigin({}));
   };
   return (
     <View style={tw`p-0`}>
@@ -134,7 +127,7 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
               value={textEllipsis(inputValue_1)}
               onChangeText={handleTextChange}
               blurOnSubmit={false}
-              placeholder={userLocation?.street || "Enter pickup location"}
+              placeholder={textEllipsis(userLocation?.street) || "Enter pickup location"}
               searchIcon={false}
               onFocus={() => setFocusedInput(0)}
               inputContainerStyle={tw` px-2`}
