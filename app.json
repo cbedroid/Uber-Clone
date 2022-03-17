@@ -2,9 +2,9 @@
   "expo": {
     "name": "uber-clone",
     "slug": "uber-clone",
-    "owner": "cbedroid<cbedroid1614@gmail.com>",
+    "owner": "cbedroid",
     "version": "1.0.0",
-    "githubUrl": "https://github.com/cbedroid/Uber-Clone",
+    "githubUrl": "https://github.com/cbedroid/Uber-clone",
     "description": "Uber passenger app clone built using React Native and expo.",
     "orientation": "portrait",
     "icon": "./src/assets/app_icon.png",
