@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Icon } from "react-native-elements";
 import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
@@ -7,6 +8,8 @@ import { selectUserLocation } from "../features/locationSlice";
 
 const NavFavourites = () => {
   const userLocation = useSelector(selectUserLocation);
+  const navigation = useNavigation();
+
   const data = [
     {
       id: "123",
@@ -21,6 +24,7 @@ const NavFavourites = () => {
       destination: "1455 Market St #400, San Francisco, CA",
     },
   ];
+
   return (
     <View>
       <FlatList
@@ -28,7 +32,7 @@ const NavFavourites = () => {
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <View style={[tw`bg-gray-200`, { height: 0.5 }]} />}
         renderItem={({ item: { location, destination, icon } }) => (
-          <TouchableOpacity style={tw`flex-row items-center p-5`}>
+          <TouchableOpacity style={tw`flex-row items-center p-5`} onPress={() => navigation.navigate("SearchScreen", { destination })}>
             <Icon style={tw`mr-4 rounded-full bg-gray-300 p-3`} name={icon} type="ionicon" color="white" size={18} />
             <View>
               <Text style={tw`font-bold text-lg`}>{location}</Text>
