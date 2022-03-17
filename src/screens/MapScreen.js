@@ -10,7 +10,7 @@ import Maps from "../components/Maps";
 import PickupCard from "../components/PickupCard";
 import RideOptionsCard from "../components/RideOptionsCard";
 import { setDirections, setCoordinates, setTravelTimeInformation, selectDestination, selectOrigin } from "../features/navSlice";
-import { fetchDirectionalApi } from "../Helper";
+import { fetchDirectionalApi } from "../Utils";
 const _ = require("lodash");
 
 const MapScreen = ({ route, navigation }) => {

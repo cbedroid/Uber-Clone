@@ -8,8 +8,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "lint": "eslint -c .eslintrc \"**/*.{js,jsx}\"",
-    "lint:fix": "eslint \"**/*.{js,jsx}\" --fix"
+    "lint": "eslint -c .eslintrc \"**src/**.{js,jsx}\"",
+    "lint:fix": "eslint \"**src/**.{js,jsx}\" --fix"
   },
   "eslintConfig": {
     "extends": [
