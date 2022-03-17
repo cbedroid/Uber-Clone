@@ -38,7 +38,7 @@ export const randomizeArray = (arr, key = null) => {
     }
     arr = _.sortBy(arr, (x) => x[key]);
   } catch (e) {
-    console.log("RandomizeArray Error", e);
+    console.error("RandomizeArray Error", e);
   }
 
   return arr;

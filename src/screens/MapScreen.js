@@ -67,10 +67,7 @@ const MapScreen = ({ route, navigation }) => {
 
   const handleMapCoordinates = async () => {
     // show loading screen
-    if (!origin || !destination) {
-      console.log(`Can not fetch directions API\n No ${origin ? "destination" : "origin"}`);
-      return; // need to show error
-    }
+    if (!origin || !destination) return; // need to show error
     // reset directions in global state
     dispatch(setDirections([]));
 

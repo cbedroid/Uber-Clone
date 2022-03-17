@@ -81,10 +81,7 @@ const NavigateCard = () => {
 
   const getDirectionalApi = async (fromPlace = {}) => {
     // show loading screen
-    if (!origin) {
-      console.log(`Can not fetch directions API\n No ${origin ? "destination" : "origin"}`);
-      return; // need to show error
-    }
+    if (!origin) return; // need to show error
     // reset directions in global state
     dispatch(setDirections([]));
     // get routes lat and lng from API

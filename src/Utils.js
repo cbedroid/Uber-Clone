@@ -17,10 +17,7 @@ export const requestUserLocationPermission = async () => {
   }
   /* @end */
   let { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== "granted") {
-    alert("Permission to access location was denied");
-    return;
-  }
+  if (status !== "granted") return;
 
   // Requesting user location permissions
   let location = null;
@@ -33,7 +30,6 @@ export const requestUserLocationPermission = async () => {
 
   // If location permission is granted, then get user's current location
   if (!_.isEmpty(location)) {
-    console.log("\nFetching user location");
     const nearbyPlacesResponse = await fetchNearbyPlaces(location);
     const userAddressResponse = await fetchUserAddress(location);
 
@@ -107,7 +103,6 @@ export const fetchDirectionalApi = async (origin, destination = {}) => {
 };
 
 export const fetchUserAddress = async (location) => {
-  console.log("Fetching User Address ");
   const lat = location?.coords?.latitude;
   const lon = location?.coords?.longitude;
   const baseURL = "http://www.mapquestapi.com/geocoding/v1/reverse";
