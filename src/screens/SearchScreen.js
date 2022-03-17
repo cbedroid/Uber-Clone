@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import _ from "lodash";
 import { Icon } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,8 +8,10 @@ import tw from "tailwind-react-native-classnames";
 import StackBottomSheet from "../components/StackBottomSheet";
 import SearchInput from "../components/subcomponents/SearchInput";
 import { selectNearbyPlaces, selectUserLocation } from "../features/locationSlice";
-import { selectOrigin, setOrigin } from "../features/navSlice";
-import { fetchPlacesApi, textEllipsis } from "../Helper";
+import { setOrigin, selectOrigin } from "../features/navSlice";
+import { textEllipsis, randomizeArray } from "../Helper";
+import { fetchPlacesApi } from "../Utils";
+import { convertToGeoFormat } from "../Utils";
 
 // eslint-disable-next-line react/display-name
 const SearchScreen = ({ navigation: { goBack } }) => {
@@ -24,8 +27,9 @@ const SearchScreen = ({ navigation: { goBack } }) => {
 
   useEffect(() => {
     console.log("SearchScreen loaded");
+
     setData(nearbyPlaces);
-    setUserInitialOrigin();
+    setDefaultOrigin();
   }, []);
 
   const updateData = (new_data) => {
@@ -33,7 +37,7 @@ const SearchScreen = ({ navigation: { goBack } }) => {
     setRefresh(true);
   };
 
-  const setUserInitialOrigin = async () => {
+  const setDefaultOrigin = async () => {
     if (!userLocation || origin) return;
     //                          street                        city                          state
     const userFullAddress = `${userLocation?.street} , ${userLocation?.adminArea5}, ${userLocation?.adminArea3}`;
@@ -43,24 +47,7 @@ const SearchScreen = ({ navigation: { goBack } }) => {
   };
 
   /**
-   * Preps and converts location data into store geo format.
-   * See feature/NavSlice `toGeoFormat` method.
-   *
-   *  @params {object} item - nearby city location data.
-   *
-   **/
-  const convertToGeoFormat = (item) => {
-    const fullAddress = item?.fields ? `${item?.fields.address}, ${item?.fields.city}, ${item?.fields.state}` : item?.displayString;
-    return {
-      name: item?.fields?.address,
-      lat: parseFloat(item?.fields?.lat),
-      lng: parseFloat(item?.fields?.lng),
-      displayString: fullAddress,
-    };
-  };
-
-  /**
-   * handles nearby city ListItem  press events
+   * handles nearby city ListItem  press event
    * @param {object} item - nearby city object
    */
   const handlePress = (item) => {
@@ -111,7 +98,7 @@ const SearchScreen = ({ navigation: { goBack } }) => {
         </View>
       </View>
       <SearchInput ref={searchInputRef} handleData={updateData} />
-      <ScrollView>{data?.map((item, index) => renderItem(item, index))}</ScrollView>
+      <ScrollView>{randomizeArray(data)?.map((item, index) => renderItem(item, index))}</ScrollView>
     </StackBottomSheet>
   );
 };
