@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, TextInput } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { PropTypes } from "prop-types";
 import { FAB, LinearProgress } from "react-native-elements";
 import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import { selectUserLocation } from "../../features/locationSlice";
 import { setOrigin, setDestination, selectDestination, selectOrigin } from "../../features/navSlice";
-import { fetchPlacesApi } from "../../Helper";
 import { textEllipsis } from "../../Helper";
+import { fetchPlacesApi } from "../../Utils";
 import AnimatedIcon from "./AnimatedIcon";
 const _ = require("lodash");
 
@@ -16,22 +16,29 @@ const _ = require("lodash");
 const SearchInput = React.forwardRef(({ handleData }, ref) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
   const userLocation = useSelector(selectUserLocation);
   const origin = useSelector(selectOrigin);
   const destination = useSelector(selectDestination);
-  const inputRef_1 = React.useRef();
-  const inputRef_2 = React.useRef();
+
+  const [focusedInput, setFocusedInput] = useState((userLocation?.street && 1) || 0);
   // eslint-disable-next-line no-unused-vars
   const [inputValue_1, setInputValue_1] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [inputValue_2, setInputValue_2] = useState(null);
   const [lastValue, setLastValue] = useState(null);
-  const [focusedInput, setFocusedInput] = useState((userLocation?.street && 1) || 0);
-  const [loading, setLoading] = useState(null);
+  const inputRef_1 = React.useRef();
+  const inputRef_2 = React.useRef();
+  const route = useRoute();
+
+  const [savedRoute, setSavedRoute] = useState(null);
   const [apiResults, setApiResults] = useState(null);
+  const [loading, setLoading] = useState(null);
 
   useEffect(() => {
     console.log("Search Loading ");
+    const userSaveRoute = route?.params?.destination; // user pick location from saved location.
+    if (userSaveRoute) setDestinationFromSavedLocation(userSaveRoute);
     setInputValue_2(null);
   }, []);
 
@@ -68,16 +75,16 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
     input = input.toLowerCase().trim(); //clean inputs
     if (input.length < 6) return;
 
-    // Prevents recalling fetchData when user is either backspacing
+    // Prevents recalling handlePlaceSearch when user is either backspacing
     // or results are already available from previous search
     if (lastValue && lastValue.toLowerCase().startsWith(input)) return;
 
     setLastValue(input);
-    const debouncedAPI = _.debounce(fetchData, 400, { maxWait: 1000 }); // debounce statement
+    const debouncedAPI = _.debounce(handlePlaceSearch, 400, { maxWait: 1000 }); // debounce statement
     debouncedAPI();
   };
 
-  const fetchData = async (search) => {
+  const handlePlaceSearch = async (search) => {
     search = search || lastValue;
     setLoading(1);
     const api_resp = await fetchPlacesApi(search);
@@ -95,6 +102,22 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
       const displayString = result.displayString.replace(/\d{5}-?\d*/g, "").trim();
       return { ...result, displayString };
     });
+  };
+
+  const setDestinationFromSavedLocation = async (location) => {
+    console.log("\nSetting Saved destination");
+    const api_response = await fetchPlacesApi(location);
+    if (!api_response || api_response.status !== 200) return;
+
+    dispatch(setDestination(api_response.data.results[0]));
+    setSavedRoute(location);
+
+    // reset origin if destination and origin are the same
+    // must use origin and destination from store, because of the additional formatting on reducers
+    if (_.isEqual(origin, destination)) {
+      console.log("Resetting Origin, it is the same as destination");
+      dispatch(setOrigin({}));
+    }
   };
   return (
     <View style={tw`p-0`}>
@@ -127,7 +150,7 @@ const SearchInput = React.forwardRef(({ handleData }, ref) => {
               searchIcon={false}
               onFocus={() => setFocusedInput(1)}
               blurOnSubmit={false}
-              placeholder="Where to?"
+              placeholder={textEllipsis(savedRoute) || "Where to?"}
               containerStyle={tw`bg-transparent border-0`}
               inputContainerStyle={tw` px-2`}
               style={tw`flex-1 ${focusedInput === 1 ? "bg-gray-100" : "bg-gray-50"} text-xl ${inputValue_2 ? "text-gray-600" : "italic"} `}
