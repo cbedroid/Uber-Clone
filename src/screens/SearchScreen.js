@@ -1,63 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import _ from "lodash";
 import { Icon } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import SearchInput from "../components/SearchInput";
+import PlaceSearchInputs from "../components/PlaceSearchInputs";
 import StackBottomSheet from "../components/StackBottomSheet";
-import { selectNearbyPlaces, selectUserLocation } from "../features/locationSlice";
-import { setOrigin, selectOrigin } from "../features/navSlice";
+import { selectNearbyPlaces } from "../features/locationSlice";
+import { selectPlaces } from "../features/navSlice";
 import { textEllipsis, randomizeArray } from "../Helper";
-import { fetchPlacesApi } from "../Utils";
 import { convertToGeoFormat } from "../Utils";
 
 // eslint-disable-next-line react/display-name
 const SearchScreen = ({ navigation: { goBack } }) => {
-  const dispatch = useDispatch();
   const nearbyPlaces = useSelector(selectNearbyPlaces);
-  const userLocation = useSelector(selectUserLocation);
-  const origin = useSelector(selectOrigin);
-  const searchInputRef = React.createRef(0);
+  const placeData = useSelector(selectPlaces);
+  const placeSearchRef = React.createRef(0);
   const [data, setData] = useState([]);
-  // flag to determined if data was refreshed or not.
+  // flag to determined if list data was refreshed or not.
   // (true --> data=`placeAPI search data` | false --> data=`nearby cities data`)
   const [isRefreshed, setRefresh] = useState(false);
 
   useEffect(() => {
     console.log("SearchScreen loaded");
-
     setData(nearbyPlaces);
-    setDefaultOrigin();
   }, []);
 
-  const updateData = (new_data) => {
-    setData(new_data);
+  const updateData = useMemo(() => {
+    setData(placeData);
     setRefresh(true);
-  };
-
-  const setDefaultOrigin = async () => {
-    if (!userLocation || origin) return;
-    //                          street                        city                          state
-    const userFullAddress = `${userLocation?.street} , ${userLocation?.adminArea5}, ${userLocation?.adminArea3}`;
-    const api_response = await fetchPlacesApi(userFullAddress);
-    if (!api_response || api_response.status !== 200) return;
-    dispatch(setOrigin(api_response.data.results[0]));
-  };
+  }, [placeData]);
 
   /**
    * handles nearby city ListItem  press event
    * @param {object} item - nearby city object
    */
   const handlePress = (item) => {
-    const formattedCity = isRefreshed ? item : convertToGeoFormat(item);
-
-    // Calls the `useImperativeHandle` method on searchInput
-    // This method is called from SearchInput Child component.
-    // It's needed to determine the correct `focused input`, which is needed
-    // to determine which dispatch method to call (setOrigin or setDestination).
-    searchInputRef.current.setOriginDestination(formattedCity, !isRefreshed);
+    if (!item) return;
+    let formattedCity;
+    try {
+      formattedCity = convertToGeoFormat(item);
+    } catch {
+      formattedCity = item;
+    }
+    placeSearchRef.current.setOriginDestination(formattedCity, !isRefreshed);
   };
 
   /**
@@ -97,7 +83,7 @@ const SearchScreen = ({ navigation: { goBack } }) => {
           <Icon type="font-awesome" name="angle-down" />
         </View>
       </View>
-      <SearchInput ref={searchInputRef} handleData={updateData} />
+      <PlaceSearchInputs ref={placeSearchRef} handleData={updateData} />
       <ScrollView>{randomizeArray(data)?.map((item, index) => renderItem(item, index))}</ScrollView>
     </StackBottomSheet>
   );
