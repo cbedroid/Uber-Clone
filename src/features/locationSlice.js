@@ -13,7 +13,9 @@ export const locationSlice = createSlice({
       state.nearbyPlaces = action.payload;
     },
     setUserLocation: (state, action) => {
-      state.userLocation = action.payload;
+      const location = action.payload;
+      const fullAddress = `${location.street}, ${location.adminArea5}, ${location.adminArea3}`;
+      state.userLocation = { ...location, fullAddress };
     },
   },
 });
