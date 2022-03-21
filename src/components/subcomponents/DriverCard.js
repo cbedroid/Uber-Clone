@@ -45,6 +45,6 @@ const DriverCard = (props) => {
 
 export default DriverCard;
 
-DriverCard.prototype = {
+DriverCard.proTypes = {
   car_image: PropTypes.string.isRequired,
 };
