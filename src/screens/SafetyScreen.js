@@ -22,7 +22,7 @@ const SafetyScreen = ({ navigation }) => {
           buttonStyle={tw`bg-black text-white p-4`}
           titleStyle={[tw`flex-1 text-xl font-bold`]}
           onPress={() => {
-            navigation.navigate("AccountSetupScreen");
+            navigation.navigate("AccountRegisterScreen");
           }}
           icon={{
             name: "arrow-right",
