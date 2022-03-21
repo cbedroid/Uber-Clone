@@ -6,13 +6,14 @@ import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import PlaceSearchInputs from "../components/PlaceSearchInputs";
 import StackBottomSheet from "../components/StackBottomSheet";
+import ListItem from "../components/subcomponents/ListItem";
 import { selectNearbyPlaces } from "../features/locationSlice";
 import { selectPlaces } from "../features/navSlice";
 import { textEllipsis, randomizeArray } from "../Helper";
 import { convertToGeoFormat } from "../Utils";
 
 // eslint-disable-next-line react/display-name
-const SearchScreen = ({ navigation: { goBack } }) => {
+const SearchScreen = ({ navigation: { goBack, navigate } }) => {
   const nearbyPlaces = useSelector(selectNearbyPlaces);
   const placeData = useSelector(selectPlaces);
   const placeSearchRef = React.createRef(0);
@@ -57,18 +58,8 @@ const SearchScreen = ({ navigation: { goBack } }) => {
    */
   const renderItem = (item, index) => {
     const fullAddress = item?.fields ? `${item?.fields.address}, ${item?.fields.city}, ${item?.fields.state}` : item?.displayString;
-
-    return (
-      <TouchableOpacity key={index} onPress={() => handlePress(item)} style={tw`flex flex-row items-center border-b border-gray-200 p-3`}>
-        <Icon type="material" name="location-pin" size={24} color="white" containerStyle={tw`bg-gray-400 w-10 h-10 rounded-full mx-4`} style={tw`m-auto`} />
-        <View style={tw`flex-1`}>
-          <Text style={[tw`text-lg`, { fontFamily: "UberTextRegular" }]}>{item?.name}</Text>
-          <Text style={tw`text-gray-400`}>{textEllipsis(fullAddress)}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+    return <ListItem key={index} icon={{ name: "location-pin" }} title={item?.name} subtitle={fullAddress} handlePress={() => handlePress(item)} />;
   };
-
   return (
     <StackBottomSheet>
       <View style={tw`flex flex-row items-center justify-between p-2`}>
@@ -84,7 +75,10 @@ const SearchScreen = ({ navigation: { goBack } }) => {
         </View>
       </View>
       <PlaceSearchInputs ref={placeSearchRef} handleData={updateData} />
-      <ScrollView>{randomizeArray(data)?.map((item, index) => renderItem(item, index))}</ScrollView>
+      <ScrollView>
+        <ListItem icon={{ name: "star" }} title="Save places" shadow={true} handlePress={() => navigate("ChoosePlaceScreen")} />
+        <View style={tw`${data && "border-t-2 border-gray-200"}`}>{randomizeArray(data)?.map((item, index) => renderItem(item, index))}</View>
+      </ScrollView>
     </StackBottomSheet>
   );
 };
