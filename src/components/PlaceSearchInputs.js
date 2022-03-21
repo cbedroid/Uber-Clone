@@ -42,12 +42,13 @@ const PlaceSearchInputs = React.forwardRef((props, ref) => {
     dispatch(setOrigin({}));
     dispatch(setDestination({}));
     const savedLocation = route?.params?.savedLocation;
+    const routeAction = route?.params?.action;
     const userCurrentLocation = userLocation?.fullAddress;
 
     if (savedLocation) {
-      setInitialOrigin(savedLocation);
+      setInitialAction(savedLocation, routeAction);
     } else if (userCurrentLocation) {
-      setInitialOrigin(userCurrentLocation);
+      setInitialAction(userCurrentLocation);
     }
   };
 
@@ -83,15 +84,16 @@ const PlaceSearchInputs = React.forwardRef((props, ref) => {
     },
   }));
 
-  const setInitialOrigin = async (location) => {
+  const setInitialAction = async (location, action = "origin") => {
     const api_response = await fetchPlacesApi(location);
     if (!api_response || api_response.status !== 200) return;
+    const reduxAction = action === "origin" ? setOrigin : setDestination;
+    const inputRef = action === "origin" ? inputRef_1 : inputRef_2;
 
     const data = api_response?.data?.results[0];
     if (!data) return;
-    console.log("\nHandling API Data");
-    setAddressToInput(location, inputRef_1);
-    dispatch(setOrigin(data));
+    setAddressToInput(location, inputRef);
+    dispatch(reduxAction(data));
 
     // reset origin if destination and origin are the same
     // must use origin and destination from store, because of the additional formatting on reducers
