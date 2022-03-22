@@ -31,6 +31,8 @@
     "APIKEY",
     "Favourites",
     "ionicon",
-    "octicon"
+    "ionicons",
+    "octicon",
+    "subcomponents"
   ]
 }

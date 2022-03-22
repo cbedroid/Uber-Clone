@@ -1,7 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { Dimensions } from "react-native";
-// eslint-disable-next-line import/no-unresolved
-import { MAPQUEST_APIKEY } from "@env";
-import axios from "axios";
+const _ = require("lodash");
 
 export const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -24,44 +23,35 @@ export const toTitleCase = (...str) => {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
 };
-export const fetchPlacesApi = async (search) => {
-  if (!search) return;
-  const mapQuestURL = "https://web.mapquestapi.com/search/v3/prediction";
+/**
+ *
+ * @param {Array} arr - Array item list.
+ * @param {String} key -  Key to sort array by.
+ * @returns {Array} - Sorted array
+ */
+export const randomizeArray = (arr, key = null) => {
   try {
-    const api_resp = await axios({
-      baseURL: mapQuestURL,
-      method: "GET",
-      params: {
-        collection: "address,adminArea,airport,category,franchise,poi",
-        feedback: true,
-        key: MAPQUEST_APIKEY,
-        limit: 15,
-        q: search,
-      },
-      responseType: "json",
-    });
-    return await api_resp;
-  } catch (error) {
-    // setErrorMsg("Sorry, we could not find this place!");
-    console.error("Error", error);
+    // if keys not supplied,then get a random object key from array
+    if (arr && typeof arr[0] === "object") {
+      const obj_keys = Object.keys(arr[0]);
+      const random_key = Math.floor(Math.random() * obj_keys.length);
+      key = key || obj_keys[random_key];
+    }
+    arr = _.sortBy(arr, (x) => x[key]);
+  } catch (e) {
+    console.error("RandomizeArray Error", e);
   }
+
+  return arr;
 };
-export const fetchDirectionalApi = async (origin, destination = {}) => {
-  const mapQuestDirectionalUrl = "http://www.mapquestapi.com/directions/v2/route";
+
+export const humanPhoneNumber = (number) => {
+  if (!number) return;
   try {
-    const api_resp = await axios({
-      baseURL: mapQuestDirectionalUrl,
-      method: "GET",
-      params: {
-        to: origin,
-        from: destination,
-        unit: "m",
-        key: MAPQUEST_APIKEY,
-      },
-      responseType: "json",
-    });
-    return api_resp;
-  } catch (error) {
-    console.error("Directional Api Error", error);
+    const reExp = new RegExp(/(\d*)(\d{3})(\d{3})(\d{4})/g);
+    const [__, ext, areaCode, fn, ln] = reExp.exec(number);
+    return `+${ext} (${areaCode})-${fn}-${ln}`;
+  } catch {
+    return number;
   }
 };

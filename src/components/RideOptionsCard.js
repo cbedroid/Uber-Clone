@@ -110,6 +110,7 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
 
   const handleTravelTime = (duration) => {
     if (!duration) return "";
+    // eslint-disable-next-line no-unused-vars
     const [h, m, _] = duration.split(":");
     return h > 0 ? `${+h} hour${+h > 1 ? "s" : ""} ${+m} min${+m > 1 ? "s" : ""}` : `${+m} min${+m > 1 ? "s" : ""}`;
   };
@@ -117,12 +118,16 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
   const calculateInternationalRate = ({ id, multiplier }) => {
     if (!travelTimeInfo) return;
     // apply Uber base fare charges to Ride
+    const minimumFee = uberFares.minimumFee;
     let currentFare =
       uberFares.baseFare +
       uberFares.surCharge +
       (travelTimeInfo.time / 60) * uberFares.perMin +
       Math.floor(+travelTimeInfo.distance) * uberFares.perMile +
       uberFares.bookingFee;
+
+    // check Uber Fare surpass the minimumFee
+    currentFare = currentFare >= minimumFee ? currentFare : minimumFee;
 
     const rate = new Intl.NumberFormat("en-us", {
       style: "currency",
@@ -213,7 +218,9 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
     return (
       <View style={tw`border-t border-gray-200 pt-1 mt-auto`}>
         <TouchableOpacity onPress={handleSubmit} style={tw`bg-black py-3 mx-3 ${!selected && "bg-gray-300"}`} disabled={!selected}>
-          <Text style={tw`text-white text-center text-xl`}>{selected?.title ? "Choose - " + selected.title + currentRate?.real_price : "Choose Ride"}</Text>
+          <Text style={tw`text-white text-center text-xl`}>
+            {selected?.title ? "Choose - " + selected.title + " " + currentRate?.real_price : "Choose Ride"}
+          </Text>
         </TouchableOpacity>
       </View>
     );

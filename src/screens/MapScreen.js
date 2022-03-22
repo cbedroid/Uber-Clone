@@ -10,7 +10,7 @@ import Maps from "../components/Maps";
 import PickupCard from "../components/PickupCard";
 import RideOptionsCard from "../components/RideOptionsCard";
 import { setDirections, setCoordinates, setTravelTimeInformation, selectDestination, selectOrigin } from "../features/navSlice";
-import { fetchDirectionalApi } from "../Helper";
+import { fetchDirectionalApi } from "../Utils";
 const _ = require("lodash");
 
 const MapScreen = ({ route, navigation }) => {
@@ -67,10 +67,7 @@ const MapScreen = ({ route, navigation }) => {
 
   const handleMapCoordinates = async () => {
     // show loading screen
-    if (!origin || !destination) {
-      console.log(`Can not fetch directions API\n No ${origin ? "destination" : "origin"}`);
-      return; // need to show error
-    }
+    if (!origin || !destination) return; // need to show error
     // reset directions in global state
     dispatch(setDirections([]));
 
@@ -116,7 +113,6 @@ const MapScreen = ({ route, navigation }) => {
       </View>
       <View style={tw`${isConfirmPage ? "h-2/6" : "h-1/2"}`}>
         <Stack.Navigator>
-          {/* <Stack.Screen name="NavigateCard" component={NavigateCard} options={{ headerShown: false }} /> */}
           <Stack.Screen name="RideOptionsCard" component={RideOptionsCard} options={{ headerShown: false }} />
           <Stack.Screen name="ConfirmPaymentCard" component={ConfirmPaymentCard} options={{ headerShown: false }} />
           <Stack.Screen name="PickupCard" component={PickupCard} options={{ headerShown: false }} />

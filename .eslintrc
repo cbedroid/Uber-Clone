@@ -7,9 +7,6 @@
   ],
   "plugins": ["react", "import", "jsx-a11y"],
   "parser": "@babel/eslint-parser",
-  "ecmaFeatures": {
-    "classes": true
-  },
   "rules": {
     "react/prop-types": 0,
     "linebreak-style": 1,

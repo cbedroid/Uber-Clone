@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   userLocation: null,
   nearbyPlaces: null,
+  savedPlaces: null,
 };
 
 export const locationSlice = createSlice({
@@ -13,7 +14,15 @@ export const locationSlice = createSlice({
       state.nearbyPlaces = action.payload;
     },
     setUserLocation: (state, action) => {
-      state.userLocation = action.payload;
+      const location = action.payload;
+      const fullAddress = `${location.street}, ${location.adminArea5}, ${location.adminArea3}`;
+      state.userLocation = { ...location, fullAddress };
+    },
+
+    setSavedPlaces: (state, action) => {
+      const location = action.payload;
+      const fullAddress = `${location.street}, ${location.adminArea5}, ${location.adminArea3}`;
+      state.savedPlaces = { ...location, fullAddress };
     },
   },
 });
@@ -23,6 +32,7 @@ export const { setNearbyPlaces, setUserLocation } = locationSlice.actions;
 
 // export Selectors
 export const selectNearbyPlaces = (state) => state.location.nearbyPlaces;
+export const selectSavedPlaces = (state) => state.location.savedPlaces;
 export const selectUserLocation = (state) => state.location.userLocation;
 
 // export locationSlice
