@@ -17,9 +17,9 @@ const AnimatedIcon = React.forwardRef((props, ref) => {
   });
 
   return (
-    <Animated.View style={{ opacity: fadeAnim }}>
+    <Animated.View ref={ref} style={{ opacity: fadeAnim }}>
       <TouchableOpacity onPress={() => props.handleClearInput()}>
-        <Icon style={tw`${props.hidden && "hidden"} border border-gray-300 text-red-400 rounded-full p-1 px-2`} {...props} />
+        <Icon style={tw`${props.hidden && "hidden"} text-red-400 p-1 px-2`} {...props} />
       </TouchableOpacity>
     </Animated.View>
   );
