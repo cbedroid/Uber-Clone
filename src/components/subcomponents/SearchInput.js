@@ -67,7 +67,7 @@ const SearchInput = React.forwardRef((props, ref) => {
   }));
 
   return (
-    <View style={tw`flex flex-row items-center content-between ${focusRef?.current ? "bg-gray-100" : "bg-gray-50"}  p-2 m-2 mb-0 `}>
+    <View style={tw`flex flex-row items-center justify-between ${focusRef?.current ? "bg-gray-100" : "bg-gray-50"}  p-2 m-2 mb-0 `}>
       <TextInput
         ref={ref}
         defaultValue={textEllipsis(value)}

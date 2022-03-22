@@ -110,6 +110,7 @@ const RideOptionCard = ({ navigation: { navigate } }) => {
 
   const handleTravelTime = (duration) => {
     if (!duration) return "";
+    // eslint-disable-next-line no-unused-vars
     const [h, m, _] = duration.split(":");
     return h > 0 ? `${+h} hour${+h > 1 ? "s" : ""} ${+m} min${+m > 1 ? "s" : ""}` : `${+m} min${+m > 1 ? "s" : ""}`;
   };

@@ -8,7 +8,6 @@ import NavFavourites from "../components/NavFavourites";
 import NavOptions from "../components/NavOptions";
 import SearchButton from "../components/subcomponents/SearchButton";
 // eslint-disable-next-line import/no-unresolved
-const _ = require("lodash");
 const UberRideCar = require("../assets/uber_x_icon_nbg_2.webp");
 
 const HomeScreen = () => {

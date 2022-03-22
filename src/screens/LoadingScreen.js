@@ -24,7 +24,7 @@ const LoadingScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (!loading) navigation.navigate("HomeScreen");
+    if (!loading) navigation.navigate("SafetyScreen");
   }, [loading]);
 
   return (

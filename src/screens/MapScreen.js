@@ -113,7 +113,6 @@ const MapScreen = ({ route, navigation }) => {
       </View>
       <View style={tw`${isConfirmPage ? "h-2/6" : "h-1/2"}`}>
         <Stack.Navigator>
-          {/* <Stack.Screen name="NavigateCard" component={NavigateCard} options={{ headerShown: false }} /> */}
           <Stack.Screen name="RideOptionsCard" component={RideOptionsCard} options={{ headerShown: false }} />
           <Stack.Screen name="ConfirmPaymentCard" component={ConfirmPaymentCard} options={{ headerShown: false }} />
           <Stack.Screen name="PickupCard" component={PickupCard} options={{ headerShown: false }} />

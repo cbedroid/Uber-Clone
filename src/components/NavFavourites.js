@@ -15,7 +15,7 @@ const NavFavourites = () => {
       id: "123",
       icon: "home",
       location: "Home",
-      destination: userLocation ? `${userLocation.street} , ${userLocation.adminArea5}, ${userLocation.adminArea3}` : "5555 SomePlace street",
+      destination: userLocation ? `${userLocation.street} , ${userLocation.adminArea5}, ${userLocation.adminArea3}` : "5555 Some Street",
       action: "origin",
     },
     {

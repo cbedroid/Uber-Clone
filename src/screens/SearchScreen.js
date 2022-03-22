@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Icon } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
@@ -9,7 +9,7 @@ import StackBottomSheet from "../components/StackBottomSheet";
 import ListItem from "../components/subcomponents/ListItem";
 import { selectNearbyPlaces } from "../features/locationSlice";
 import { selectPlaces } from "../features/navSlice";
-import { textEllipsis, randomizeArray } from "../Helper";
+import { randomizeArray } from "../Helper";
 import { convertToGeoFormat } from "../Utils";
 
 // eslint-disable-next-line react/display-name
@@ -27,7 +27,7 @@ const SearchScreen = ({ navigation: { goBack, navigate } }) => {
     setData(nearbyPlaces);
   }, []);
 
-  const updateData = useMemo(() => {
+  const updateData = useCallback(() => {
     setData(placeData);
     setRefresh(true);
   }, [placeData]);
