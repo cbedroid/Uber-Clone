@@ -8,8 +8,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "lint": "eslint -c .eslintrc \"**src/**.{js,jsx}\"",
-    "lint:fix": "eslint \"**src/**.{js,jsx}\" --fix"
+    "lint": "eslint -c .eslintrc './src/**/*.{js,jsx}'",
+    "lint:fix": "eslint \"./src/**/*.{js,jsx}\" --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -28,15 +28,18 @@
     "@react-navigation/stack": "^5.14.9",
     "@reduxjs/toolkit": "^1.7.2",
     "axios": "^0.26.0",
+    "bcryptjs": "^2.4.3",
     "country-codes-list": "^1.6.8",
     "country-flag-icons": "^1.4.22",
     "electron": "^17.1.0",
     "expo": "~44.0.0",
     "expo-app-loading": "^1.3.0",
     "expo-location": "~14.0.1",
+    "expo-secure-store": "~11.1.0",
     "expo-splash-screen": "~0.14.1",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.6",
+    "firebase": "^9.6.9",
     "google-libphonenumber": "^3.2.27",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
