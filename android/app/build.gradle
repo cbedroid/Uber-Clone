@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: "com.google.gms.google-services"
 
 import com.android.build.OutputFile
 
@@ -186,6 +187,8 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
@@ -241,4 +244,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
+
+// apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 applyNativeModulesAppBuildGradle(project)
