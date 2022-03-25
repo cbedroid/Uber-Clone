@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>556992996945-4cq8krks8c5l7rab9ooodh4ldv1r3u7q.apps.googleusercontent.com</string>
+	<string>629360553355-u4igr7r5re417ebsgtcqnak9tcva68n6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.556992996945-4cq8krks8c5l7rab9ooodh4ldv1r3u7q</string>
+	<string>com.googleusercontent.apps.629360553355-u4igr7r5re417ebsgtcqnak9tcva68n6</string>
 	<key>API_KEY</key>
-	<string>AIzaSyALfuTkhofxjRRXyxIvGRAwVvrzGz6Cc0k</string>
+	<string>AIzaSyDzQSOTdhJCw2IgxNqzQT8J7xnTq8owYAs</string>
 	<key>GCM_SENDER_ID</key>
-	<string>556992996945</string>
+	<string>629360553355</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.uberclone</string>
 	<key>PROJECT_ID</key>
-	<string>uber-clone-342107</string>
+	<string>uber-clone-ef29f</string>
 	<key>STORAGE_BUCKET</key>
-	<string>uber-clone-342107.appspot.com</string>
+	<string>uber-clone-ef29f.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:556992996945:ios:755ac7177cff324539ba70</string>
+	<string>1:629360553355:ios:fdec56bf3714dbb1fb138e</string>
 </dict>
 </plist>
