@@ -35,10 +35,11 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "plugins": [
+     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/perf",
       "@react-native-firebase/crashlytics"
     ]
   }
 }
+ 
