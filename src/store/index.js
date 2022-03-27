@@ -1,6 +1,8 @@
 /* Docs : https://github.com/zalmoxisus/redux-devtools-extension
  */
+
 import { createStore, applyMiddleware, compose } from "redux";
+import { persistStore } from "redux-persist";
 import rootReducer from "../features/index";
 
 const composeEnhancers =
@@ -15,4 +17,6 @@ const enhancer = composeEnhancers(
   // other store enhancers if any
 );
 const store = createStore(rootReducer, enhancer);
+export const appPersist = persistStore(store);
+
 export default store;
