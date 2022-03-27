@@ -84,6 +84,13 @@ export function FirebaseProvider({ children }) {
     }
   };
 
+  /**
+   *  Sign in user
+   * @param {string} user
+   * @param {string} password
+   * @param {function} onSuccess
+   * @param {function} onError
+   */
   const signIn = (user, password, onSuccess, onError) => {
     signInWithEmailAndPassword(auth, user, password)
       .then((credential) => {
@@ -97,6 +104,14 @@ export function FirebaseProvider({ children }) {
         if (typeof onError === "function") return onError(error.code);
       });
   };
+
+  /**
+   * Sign In user with  firebase credentials
+   * @param {object} credential
+   * @param {function} onSuccess
+   * @param {function} onError
+   */
+
   const signInWithCredential = (credential, onSuccess, onError) => {
     auth
       .signInWithCredential(credential)
@@ -110,6 +125,14 @@ export function FirebaseProvider({ children }) {
         return onError(error.code);
       });
   };
+
+  /**
+   *  Reauthenticate current user
+   * @param {string} email
+   * @param {string} password
+   * @returns
+   */
+
   const reauthenticateUser = (email, password) => {
     // NOTE: User must be currently logged to reauthenticate
     // Great for updating user sensitive data like email,password ...etc
@@ -124,8 +147,12 @@ export function FirebaseProvider({ children }) {
   };
 
   /**
-   *  send 6 digits firebase phone verication code to user
+   *  send six(6) digits verification code to user phone
    *
+   * @param {string} phoneNumber
+   * @param {*} recaptchaState
+   * @param {function} onSuccess
+   * @param {function} onError
    */
   const sendPhoneVerificationCode = async (phoneNumber, recaptchaState, onSuccess, onError) => {
     // The FirebaseRecaptchaVerifierModal ref implements the
@@ -216,6 +243,6 @@ export function FirebaseProvider({ children }) {
     logout,
   };
 
-  // Provider
+  // FireBase Provider
   return <FirebaseContext.Provider value={value}>{children}</FirebaseContext.Provider>;
 }
