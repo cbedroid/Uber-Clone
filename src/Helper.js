@@ -2,12 +2,39 @@
 import { Dimensions } from "react-native";
 const _ = require("lodash");
 
+/**
+ * Blocking delay function
+ * @param {number} milliseconds
+ * @returns
+ */
 export const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
-export const textEllipsis = (text, offset = 120) => {
-  // Custom text ellipsis style for text input
 
+/**
+ *
+ * compare two objects and return difference in keys
+ * @param {object} a  object one
+ * @param {object} b  object two
+ * @returns {array}  array of keys that are different
+ */
+export const getObjectDiff = (a, b) => {
+  _.reduce(
+    a,
+    function (result, value, key) {
+      return _.isEqual(value, b[key]) ? result : result.concat(key);
+    },
+    []
+  );
+};
+
+/**
+ * Return ellipsis if string is longer than maxLength
+ * @param {string} text
+ * @param {number} offset  - maximum with before ellipsis text
+ * @returns
+ */
+export const textEllipsis = (text, offset = 120) => {
   if (!text) return text;
   const window_width = Dimensions.get("screen").width - offset;
   text = text.trim();
@@ -17,13 +44,20 @@ export const textEllipsis = (text, offset = 120) => {
   return text_length > window_width ? text.slice(0, maxCharacters) + " ..." : text;
 };
 
+/**
+ * Convert a given string in title case format
+ * @param  {...any} str
+ * @returns
+ */
 export const toTitleCase = (...str) => {
   str = str.join(" ");
   return str.replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
   });
 };
+
 /**
+ * Randomize array element order in-place.
  *
  * @param {Array} arr - Array item list.
  * @param {String} key -  Key to sort array by.
@@ -45,6 +79,11 @@ export const randomizeArray = (arr, key = null) => {
   return arr;
 };
 
+/**
+ * Convert a phone number in format: +CountyCode (xxx) xxx-xxxx
+ * @param {number,string} number
+ * @returns
+ */
 export const humanPhoneNumber = (number) => {
   if (!number) return;
   try {

@@ -20,10 +20,12 @@
       "**/*"
     ],
     "ios": {
+      "googleServicesFile": "ios/uberclone.xcodeproj/GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "y"
     },
     "android": {
+      "googleServicesFile": "android/app/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#000000"
@@ -32,6 +34,12 @@
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
-    }
+    },
+     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics"
+    ]
   }
 }
+ 
