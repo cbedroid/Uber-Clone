@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Animated, Easing, Image } from "react-native";
 import tw from "tailwind-react-native-classnames";
+import { useFirebase } from "../contexts/FirebaseContext";
 import { requestUserLocationPermission } from "../Utils";
 const UberLogo = require("../assets/uber_logo_white.webp");
 
 const LoadingScreen = ({ navigation }) => {
+  const { currentUser } = useFirebase();
   const [loading, setLoading] = useState(true);
   const scaleAnimation = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
 
@@ -24,7 +26,10 @@ const LoadingScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (!loading) navigation.navigate("SafetyScreen");
+    if (!loading) {
+      if (currentUser) return navigation.navigate("HomeScreen");
+      return navigation.navigate("SafetyScreen");
+    }
   }, [loading]);
 
   return (
