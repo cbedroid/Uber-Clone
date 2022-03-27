@@ -29,6 +29,13 @@
             {
               "client_id": "629360553355-k6a5ns0m0s1vt16ef3dc85dln262vt31.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "629360553355-u4igr7r5re417ebsgtcqnak9tcva68n6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.uberclone"
+              }
             }
           ]
         }

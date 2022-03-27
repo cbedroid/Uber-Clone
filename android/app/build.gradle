@@ -184,10 +184,24 @@ android {
     }
 }
 
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    //  // Import the Firebase BoM
+    // implementation platform('com.google.firebase:firebase-bom:29.3.0')
+
+    // // When using the BoM, you don't specify versions in Firebase library dependencies
+
+    // // Declare the dependency for the Firebase SDK for Google Analytics
+    // implementation 'com.google.firebase:firebase-analytics'
+
+    // // Declare the dependencies for any other desired Firebase products
+    // // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
+    // implementation 'com.google.firebase:firebase-auth'
+    // implementation 'com.google.firebase:firebase-firestore'
+
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
@@ -241,5 +255,8 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
+// apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+// // apply from: "../../node_modules/react-native/react.gradle"
+// apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json')"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
 applyNativeModulesAppBuildGradle(project)
