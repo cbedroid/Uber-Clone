@@ -3,11 +3,25 @@ import { Platform } from "react-native";
 import { MAPQUEST_APIKEY } from "@env";
 import axios from "axios";
 import Constants from "expo-constants";
+import * as Font from "expo-font";
 import * as Location from "expo-location";
 import { setUserLocation, setNearbyPlaces } from "./features/locationSlice";
 import store from "./store/index";
 // eslint-disable-next-line import/no-unresolved
 const _ = require("lodash");
+
+export const loadFont = async () =>
+  Font.loadAsync({
+    UberMoveRegular: require("./assets/fonts/UberMove-Regular.ttf"),
+    UberMoveMedium: require("./assets/fonts/UberMove-Medium.ttf"),
+    UberTextRegular: require("./assets/fonts/UberMoveText-Regular.ttf"),
+    VisbySemibold: require("./assets/fonts/VisbySemibold.ttf"),
+    VisbyRegular: require("./assets/fonts/VisbyRegular.ttf"),
+    VisbyMedium: require("./assets/fonts/VisbyMedium.ttf"),
+    VisbyLight: require("./assets/fonts/VisbyLight.ttf"),
+    VisbyThin: require("./assets/fonts/VisbyThin.ttf"),
+    VisbyThinItalic: require("./assets/fonts/VisbyThinItalic.ttf"),
+  });
 
 export const requestUserLocationPermission = async () => {
   /* @hide */

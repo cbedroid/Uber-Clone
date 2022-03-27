@@ -5,6 +5,23 @@ const _ = require("lodash");
 export const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
+
+/**
+ *
+ * compare two objects and return difference in keys
+ * @param {object} a  object one
+ * @param {object} b  object two
+ * @returns {array}  array of keys that are different
+ */
+export const getObjectDiff = (a, b) => {
+  _.reduce(
+    a,
+    function (result, value, key) {
+      return _.isEqual(value, b[key]) ? result : result.concat(key);
+    },
+    []
+  );
+};
 export const textEllipsis = (text, offset = 120) => {
   // Custom text ellipsis style for text input
 
