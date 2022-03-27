@@ -5,10 +5,13 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Button, Icon } from "react-native-elements";
 import { useDispatch } from "react-redux";
 import tw from "tailwind-react-native-classnames";
-import { setUser } from "../../features/userSlice";
+import BackButton from "../../components/BackButton";
+import LoadingDialog from "../../components/subcomponents/LoadingDialog";
+import { setUser, resetUser } from "../../features/userSlice";
 const countryCodes = require("country-codes-list");
+const SMS_NUMBER = "44398"; // firebase sms phone number
 
-const PhoneSetupScreen = ({ navigation }) => {
+const PhoneRegisterScreen = ({ navigation }) => {
   const inputRef = useRef();
   const prevValue = useRef();
   const [isFocus, setIsFocus] = useState(false);
@@ -17,10 +20,13 @@ const PhoneSetupScreen = ({ navigation }) => {
   const [value, setValue] = useState(null);
   const [codes, setCodes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("PhoneSetup loaded");
+    console.log("PhoneRegisterScreen loaded");
+    // reset user redux state to prepare from new incoming data
+    dispatch(resetUser());
   }, []);
 
   useEffect(() => {
@@ -31,19 +37,26 @@ const PhoneSetupScreen = ({ navigation }) => {
   }, [codes]);
 
   const validateNumber = () => {
-    // TODO: Add phone number validation in production mode
+    // TODO: Add phone number service validation in production mode
 
     const phoneNumber = (value || "").replace(/[^\d/]/g, "");
     if (phoneNumber.length < 10) return "Invalid phone number";
   };
   const handleSubmit = () => {
     const error = validateNumber();
-    if (!error) {
-      const fullNumber = (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");
-      dispatch(setUser({ phoneNumber: fullNumber }));
-      navigation.navigate("PhoneVerificationScreen");
+    if (error) {
+      return setErrorMessage(error);
     }
-    setErrorMessage(error);
+
+    const fullNumber = "+" + (countryCode?.countryCallingCode || 1) + (value || "").replace(/[^\d/]/g, "");
+    dispatch(setUser({ phoneNumber: fullNumber }));
+    // Weird issue with redux not updating state, before navigator switches screen
+    // Added timeout to fix it
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigation.navigate("OTPVerificationScreen");
+    }, 1000);
   };
 
   const dropDownItem = (item, index) => {
@@ -91,6 +104,8 @@ const PhoneSetupScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={tw`bg-gray-50 flex-1`}>
+      <BackButton />
+      <LoadingDialog isVisible={loading} />
       <Text style={tw`text-xl text-gray-800 mb-4`}>Enter your mobile number</Text>
       <View style={tw`flex flex-row items-center h-14 `}>
         <Dropdown
@@ -128,7 +143,7 @@ const PhoneSetupScreen = ({ navigation }) => {
             searchIcon={false}
             maxLength={16} //setting limit of input
             onChangeText={(input) => handleChangeText(input)}
-            onSubmitEditing={handleSubmit}
+            onSubmitEditing={() => handleSubmit()}
           />
         </View>
       </View>
@@ -136,9 +151,10 @@ const PhoneSetupScreen = ({ navigation }) => {
       <View style={tw`h-5/6`}>
         <Text style={[tw`text-sm text-gray-500`]}>
           By proceeding, you consent to get calls, WhatsApp or SMS messages, including automated means, from Uber, and its affiliates to the number provided.
+          Text &quot;STOP&quot; to {SMS_NUMBER} to opt out.
         </Text>
         <Button
-          onPress={handleSubmit}
+          onPress={() => handleSubmit()}
           containerStyle={tw`mt-auto flex justify-end items-end w-full pb-16`}
           buttonStyle={tw`bg-black rounded-full h-14 w-28 p-3`}
           icon={{ type: "fontisto", name: "arrow-right", color: "#fff", size: 24 }}
@@ -151,7 +167,7 @@ const PhoneSetupScreen = ({ navigation }) => {
   );
 };
 
-export default PhoneSetupScreen;
+export default PhoneRegisterScreen;
 
 const styles = StyleSheet.create({
   container: {
