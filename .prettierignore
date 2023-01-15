@@ -1,0 +1,12 @@
+**/.git
+**/.svn
+**/.hg
+
+**/node_modules
+**/*.d.ts
+
+build/
+dist/
+coverage/
+**/templates/**/*.html
+**/static/**/*.min.*

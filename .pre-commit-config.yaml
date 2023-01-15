@@ -1,0 +1,60 @@
+default_stages: [commit]
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: >
+          (?x)^(
+                  tests/|
+              )$
+      - id: check-json
+      - id: end-of-file-fixer
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-ast
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.6.2 # Use the sha or tag you want to point at
+    hooks:
+      - id: prettier
+        args:
+          - --config=./.prettierrc.json
+          - --ignore-path=./frontend/.prettierignore
+          - --write
+        additional_dependencies:
+          - prettier@2.6.2
+          - "@trivago/prettier-plugin-sort-imports@3.2.0"
+
+  - repo: local
+    hooks:
+      - id: eslint
+        stages: [commit]
+        name: Run eslint against all files
+        entry: ./node_modules/.bin/eslint
+        language: node
+        language_version: 14.15.1
+        types: [file]
+        files: \.[jt]sx?$
+        exclude: ./node_modules/
+        args:
+          - --config=./.eslintrc.json
+          - --ignore-path=./.eslintignore
+          - --fix
+        additional_dependencies:
+          - expo
+
+      - id: typescript
+        stages: [push]
+        name: Run typescript checks against code.
+        entry: >
+          ./node_modules/.bin/tsc
+          --project ./tsconfig.json
+          --noEmit
+        language: node
+        language_version: 14.15.1
+        types: [file]
+        files: \.[jt]sx?$
+        exclude: ./node_modules/
+        pass_filenames: false
